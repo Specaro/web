@@ -1,0 +1,95 @@
+{
+  "business": {
+    "name": "Ember & Oak",
+    "wordmark_html": "Ember <em>&amp;</em> Oak",
+    "phone_href": "+15550142298",
+    "address": "412 Kessler Ave · Northside",
+    "address_note": "Across from the old depot"
+  },
+  "nav": {
+    "menu_label": "Menu",
+    "story_label": "Our Story",
+    "reviews_label": "Reviews",
+    "visit_label": "Visit"
+  },
+  "copy": {
+    "reserve_cta": "Reserve a table"
+  },
+  "hero": {
+    "eyebrow": "Wood-fired · Est. 2018 · Northside",
+    "headline_html": "Everything here<br>meets the <span class=\"accent\">fire.</span>",
+    "lede": "A neighborhood grill built around one oak-fed hearth — steaks, roasted vegetables, and flatbreads cooked the same way for eight years running.",
+    "secondary_cta": "See tonight's menu",
+    "meta": [
+      { "title": "Tue–Sun, 5–10pm", "sub": "Closed Mondays" },
+      { "title": "412 Kessler Ave", "sub": "Northside, across from the depot" },
+      { "title": "(555) 014-2298", "sub": "Walk-ins welcome at the bar" }
+    ]
+  },
+  "menu": {
+    "eyebrow": "From the hearth",
+    "heading": "Tonight's menu",
+    "categories": [
+      {
+        "name": "Mains",
+        "dishes": [
+          { "name": "Dry-aged ribeye", "note": "14oz, bone-in, roasted marrow", "price": "$42" },
+          { "name": "Whole grilled trout", "note": "charred lemon, brown butter", "price": "$28" },
+          { "name": "Oak-roasted half chicken", "note": "chili honey glaze", "price": "$24" },
+          { "name": "Charred cauliflower steak", "note": "tahini, pomegranate, herbs", "price": "$21" }
+        ]
+      },
+      {
+        "name": "To start",
+        "dishes": [
+          { "name": "Ember-roasted flatbread", "note": "smoked ricotta, honey", "price": "$14" },
+          { "name": "Grilled peach & burrata", "note": "basil, aged balsamic", "price": "$15" },
+          { "name": "Charred octopus", "note": "smoked paprika, fingerlings", "price": "$19" },
+          { "name": "Fire-blistered shishitos", "note": "sea salt, calabrian aioli", "price": "$11" }
+        ]
+      }
+    ]
+  },
+  "story": {
+    "eyebrow": "Since 2018",
+    "heading": "One hearth, one neighborhood",
+    "paragraphs": [
+      "Ember & Oak started as a single wood-fired hearth in a converted garage bay, three blocks from where it stands now. There was no gas line, no fryer, no flat-top — just oak, iron, and whatever came off the grill that night.",
+      "Eight years later, that's still the whole kitchen. Every dish that leaves it has touched the fire at some point, whether that means a forty-minute low roast or a ninety-second blister right over the coals. We buy whole animals from three farms within sixty miles and change the menu with what shows up."
+    ],
+    "quote": "\"We don't have a fryer. We don't have a microwave. If it can't be done over oak, it's not on the menu.\"",
+    "quote_author": "Dana Reyes, Chef & Owner"
+  },
+  "reviews": {
+    "eyebrow": "Word of mouth",
+    "heading": "What the neighborhood says",
+    "items": [
+      { "stars": "★★★★★", "text": "\"The ribeye alone is worth the drive across town. Smoky in a way that actually tastes like wood, not liquid smoke.\"", "author": "Priya M. — regular since 2019" },
+      { "stars": "★★★★★", "text": "\"Brought my whole family for a birthday and the half chicken disappeared in ten minutes flat. Book ahead on weekends.\"", "author": "Tom H. — Northside resident" },
+      { "stars": "★★★★★", "text": "\"Best vegetarian option in the area that doesn't feel like an afterthought. The cauliflower steak is a full meal.\"", "author": "Aisha K. — first-time visitor" }
+    ]
+  },
+  "visit": {
+    "eyebrow": "Come by",
+    "heading": "Find us on Kessler",
+    "rows": [
+      { "label": "Address", "value": "412 Kessler Ave, Northside" },
+      { "label": "Phone", "value": "(555) 014-2298" },
+      { "label": "Hours", "value": "Tue–Sun, 5:00–10:00pm" },
+      { "label": "Bar", "value": "Opens 4:30pm, walk-ins only" },
+      { "label": "Parking", "value": "Free lot behind the depot" }
+    ],
+    "cta_label": "Call to reserve"
+  },
+  "footer": {
+    "fine": "© 2026 Ember & Oak Northside. Demo site built by Specaro Web."
+  },
+  "theme": {
+    "accent": "#c1471d",
+    "accentHot": "#e0672f",
+    "accentHotDark": "#f0854f",
+    "secondary": "#a9843f",
+    "secondaryDark": "#d3ac6b",
+    "emberParticleRgb": "224,103,47"
+  }
+}

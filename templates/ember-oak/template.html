@@ -1,0 +1,380 @@
+<title>{{business.name}}</title>
+<style>
+  :root{
+    --paper:#f6ede1;
+    --paper-dim:#efe1cf;
+    --ink:#1c1613;
+    --ink-soft:#4a3d34;
+    --ember:{{theme.accent}};
+    --ember-hot:{{theme.accentHot}};
+    --gold:{{theme.secondary}};
+    --line: rgba(28,22,19,.14);
+    --card: #fffaf2;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#171210;
+      --paper-dim:#1e1815;
+      --ink:#f1e6d8;
+      --ink-soft:#c9b8a6;
+      --ember:{{theme.accentHot}};
+      --ember-hot:{{theme.accentHotDark}};
+      --gold:{{theme.secondaryDark}};
+      --line: rgba(241,230,216,.14);
+      --card:#1f1a16;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#171210;
+    --paper-dim:#1e1815;
+    --ink:#f1e6d8;
+    --ink-soft:#c9b8a6;
+    --ember:{{theme.accentHot}};
+    --ember-hot:{{theme.accentHotDark}};
+    --gold:{{theme.secondaryDark}};
+    --line: rgba(241,230,216,.14);
+    --card:#1f1a16;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family: ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--ember); color:var(--paper); }
+
+  h1,h2,h3{
+    font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+    font-weight:700;
+    text-wrap:balance;
+    margin:0;
+  }
+
+  .label{
+    font-size:0.72rem;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--ember);
+    font-weight:600;
+  }
+
+  a{ color:inherit; }
+
+  .wrap{
+    max-width:1080px;
+    margin:0 auto;
+    padding:0 1.5rem;
+  }
+
+  header.site{
+    position:sticky; top:0; z-index:20;
+    background:color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:1.1rem 1.5rem;
+    max-width:1080px; margin:0 auto;
+  }
+  .wordmark{
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-weight:700; font-size:1.25rem; letter-spacing:0.01em;
+  }
+  .wordmark em{ font-style:italic; color:var(--ember); }
+  .navlinks{ display:flex; gap:2rem; font-size:0.9rem; }
+  .navlinks a{ text-decoration:none; color:var(--ink-soft); transition:color .15s; }
+  .navlinks a:hover{ color:var(--ember); }
+  .navlinks a:focus-visible, a.cta:focus-visible{ outline:2px solid var(--ember); outline-offset:3px; }
+  @media (max-width:640px){ .navlinks{ display:none; } }
+
+  .cta{
+    display:inline-block;
+    background:var(--ember);
+    color:#fff8f1;
+    padding:0.7rem 1.3rem;
+    border-radius:2px;
+    text-decoration:none;
+    font-size:0.85rem;
+    letter-spacing:0.04em;
+    font-weight:600;
+    transition: background .15s, transform .15s;
+  }
+  .cta:hover{ background:var(--ember-hot); }
+
+  /* HERO */
+  .hero{
+    position:relative;
+    padding:5.5rem 1.5rem 4rem;
+    overflow:hidden;
+    border-bottom:1px solid var(--line);
+  }
+  #embers{ position:absolute; inset:0; z-index:0; opacity:0.55; pointer-events:none; }
+  .hero-inner{ position:relative; z-index:1; max-width:1080px; margin:0 auto; }
+  .hero h1{
+    font-size:clamp(2.6rem, 6.2vw, 5rem);
+    line-height:0.98;
+    letter-spacing:-0.01em;
+  }
+  .hero h1 .accent{ color:var(--ember); font-style:italic; }
+  .hero p.lede{
+    max-width:38ch;
+    font-size:1.1rem;
+    color:var(--ink-soft);
+    margin-top:1.3rem;
+    line-height:1.55;
+  }
+  .hero-actions{ display:flex; gap:1rem; margin-top:2rem; flex-wrap:wrap; align-items:center; }
+  .hero-actions .secondary{ font-size:0.9rem; color:var(--ink-soft); text-decoration:underline; text-underline-offset:3px; }
+
+  .hero-meta{
+    margin-top:3.5rem;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1.5rem;
+    border-top:1px solid var(--line);
+    padding-top:1.5rem;
+  }
+  .hero-meta div{ font-size:0.85rem; color:var(--ink-soft); }
+  .hero-meta strong{ display:block; color:var(--ink); font-size:0.95rem; margin-bottom:0.2rem; font-family:Georgia,serif; }
+  @media (max-width:640px){ .hero-meta{ grid-template-columns:1fr; } }
+
+  section{ padding:4.5rem 0; border-bottom:1px solid var(--line); }
+  .section-head{ margin-bottom:2.5rem; }
+  .section-head h2{ font-size:clamp(1.8rem,3.4vw,2.6rem); margin-top:0.4rem; }
+
+  /* MENU */
+  .menu-grid{ display:grid; grid-template-columns:1fr 1fr; gap:3rem 4rem; }
+  @media (max-width:760px){ .menu-grid{ grid-template-columns:1fr; gap:2.5rem; } }
+  .menu-cat h3{
+    font-size:1.05rem; text-transform:uppercase; letter-spacing:0.08em;
+    color:var(--gold); font-family: ui-sans-serif, sans-serif; font-weight:700;
+    padding-bottom:0.6rem; border-bottom:1px solid var(--line); margin-bottom:1rem;
+  }
+  .dish{ display:flex; justify-content:space-between; gap:1rem; padding:0.65rem 0; align-items:baseline; }
+  .dish-name{ font-family:Georgia,serif; font-size:1.05rem; }
+  .dish-note{ display:block; color:var(--ink-soft); font-size:0.85rem; margin-top:0.15rem; }
+  .dish-price{ font-variant-numeric:tabular-nums; color:var(--ember); font-weight:700; white-space:nowrap; }
+
+  /* ABOUT / STORY */
+  .story{ display:grid; grid-template-columns:1.1fr 0.9fr; gap:3.5rem; align-items:start; }
+  @media (max-width:800px){ .story{ grid-template-columns:1fr; } }
+  .story p{ line-height:1.75; color:var(--ink-soft); font-size:1.02rem; margin:0 0 1.1rem; }
+  .story p:first-of-type::first-letter{
+    font-family:Georgia,serif; font-size:3.4rem; float:left; line-height:0.8;
+    padding:0.1rem 0.35rem 0 0; color:var(--ember); font-weight:700;
+  }
+  .pull{
+    border-left:3px solid var(--ember);
+    padding-left:1.3rem;
+    font-family:Georgia,serif; font-style:italic; font-size:1.3rem;
+    color:var(--ink); line-height:1.5;
+  }
+  .pull cite{ display:block; margin-top:0.8rem; font-style:normal; font-size:0.8rem; color:var(--ink-soft); letter-spacing:0.04em; text-transform:uppercase; }
+
+  /* TESTIMONIALS */
+  .quotes{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+  @media (max-width:800px){ .quotes{ grid-template-columns:1fr; } }
+  .quote-card{
+    background:var(--card); border:1px solid var(--line); padding:1.6rem;
+    border-radius:3px;
+  }
+  .quote-card p{ font-size:0.98rem; line-height:1.6; margin:0 0 1rem; }
+  .quote-card .who{ font-size:0.82rem; color:var(--ink-soft); }
+  .stars{ color:var(--gold); letter-spacing:0.15em; font-size:0.85rem; margin-bottom:0.5rem; }
+
+  /* VISIT / CONTACT */
+  .visit{ display:grid; grid-template-columns:1fr 1fr; gap:3rem; }
+  @media (max-width:760px){ .visit{ grid-template-columns:1fr; } }
+  .info-row{ display:flex; justify-content:space-between; padding:0.9rem 0; border-bottom:1px solid var(--line); font-size:0.95rem; }
+  .info-row span:first-child{ color:var(--ink-soft); }
+  .map-block{
+    background:var(--card); border:1px solid var(--line); border-radius:4px;
+    height:100%; min-height:220px; display:flex; align-items:center; justify-content:center;
+    color:var(--ink-soft); font-size:0.85rem; text-align:center; padding:2rem;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:28px 28px;
+  }
+  .pin{ display:inline-flex; align-items:center; justify-content:center; width:2.2rem; height:2.2rem; border-radius:50%; background:var(--ember); color:#fff8f1; margin-bottom:0.8rem; font-size:1.1rem; }
+
+  footer{ padding:3rem 0 4rem; }
+  .foot-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .foot-row .wordmark{ font-size:1.1rem; }
+  footer .fine{ color:var(--ink-soft); font-size:0.82rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
+</style>
+
+<header class="site">
+  <nav class="nav">
+    <div class="wordmark">{{{business.wordmark_html}}}</div>
+    <div class="navlinks">
+      <a href="#menu">{{nav.menu_label}}</a>
+      <a href="#story">{{nav.story_label}}</a>
+      <a href="#reviews">{{nav.reviews_label}}</a>
+      <a href="#visit">{{nav.visit_label}}</a>
+    </div>
+    <a class="cta" href="#visit">{{copy.reserve_cta}}</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <canvas id="embers"></canvas>
+  <div class="hero-inner">
+    <p class="label">{{hero.eyebrow}}</p>
+    <h1>{{{hero.headline_html}}}</h1>
+    <p class="lede">{{hero.lede}}</p>
+    <div class="hero-actions">
+      <a class="cta" href="#visit">{{copy.reserve_cta}}</a>
+      <a class="secondary" href="#menu">{{hero.secondary_cta}} &rarr;</a>
+    </div>
+    <div class="hero-meta">
+      {{#hero.meta}}
+      <div><strong>{{title}}</strong>{{sub}}</div>
+      {{/hero.meta}}
+    </div>
+  </div>
+</section>
+
+<section id="menu">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">{{menu.eyebrow}}</p>
+      <h2>{{menu.heading}}</h2>
+    </div>
+    <div class="menu-grid">
+      {{#menu.categories}}
+      <div class="menu-cat">
+        <h3>{{name}}</h3>
+        {{#dishes}}
+        <div class="dish">
+          <div><span class="dish-name">{{name}}</span><span class="dish-note">{{note}}</span></div>
+          <div class="dish-price">{{price}}</div>
+        </div>
+        {{/dishes}}
+      </div>
+      {{/menu.categories}}
+    </div>
+  </div>
+</section>
+
+<section id="story">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">{{story.eyebrow}}</p>
+      <h2>{{story.heading}}</h2>
+    </div>
+    <div class="story">
+      <div>
+        {{#story.paragraphs}}
+        <p>{{.}}</p>
+        {{/story.paragraphs}}
+      </div>
+      <blockquote class="pull">
+        {{story.quote}}
+        <cite>&mdash; {{story.quote_author}}</cite>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<section id="reviews">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">{{reviews.eyebrow}}</p>
+      <h2>{{reviews.heading}}</h2>
+    </div>
+    <div class="quotes">
+      {{#reviews.items}}
+      <div class="quote-card">
+        <div class="stars">{{stars}}</div>
+        <p>{{text}}</p>
+        <div class="who">{{author}}</div>
+      </div>
+      {{/reviews.items}}
+    </div>
+  </div>
+</section>
+
+<section id="visit">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">{{visit.eyebrow}}</p>
+      <h2>{{visit.heading}}</h2>
+    </div>
+    <div class="visit">
+      <div>
+        {{#visit.rows}}
+        <div class="info-row"><span>{{label}}</span><span>{{value}}</span></div>
+        {{/visit.rows}}
+        <div style="margin-top:1.8rem;">
+          <a class="cta" href="tel:{{business.phone_href}}">{{visit.cta_label}} &rarr;</a>
+        </div>
+      </div>
+      <div class="map-block">
+        <div>
+          <div class="pin">&#128293;</div>
+          <div>{{business.address}}<br>{{business.address_note}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-row">
+    <div class="wordmark">{{{business.wordmark_html}}}</div>
+    <div class="fine">{{footer.fine}}</div>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var canvas = document.getElementById('embers');
+    if (!canvas) return;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var ctx = canvas.getContext('2d');
+    var hero = canvas.parentElement;
+    function resize(){
+      canvas.width = hero.clientWidth;
+      canvas.height = hero.clientHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    if (reduce) return;
+
+    var particles = [];
+    var count = Math.min(46, Math.floor(canvas.width / 24));
+    for (var i=0;i<count;i++){
+      particles.push({
+        x: Math.random()*canvas.width,
+        y: canvas.height + Math.random()*canvas.height,
+        r: 1 + Math.random()*2.2,
+        speed: 0.25 + Math.random()*0.6,
+        drift: (Math.random()-0.5)*0.4,
+        alpha: 0.15 + Math.random()*0.35
+      });
+    }
+    function draw(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      for (var i=0;i<particles.length;i++){
+        var p = particles[i];
+        p.y -= p.speed;
+        p.x += p.drift;
+        if (p.y < -10){ p.y = canvas.height + 10; p.x = Math.random()*canvas.width; }
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba({{theme.emberParticleRgb}},' + p.alpha + ')';
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fill();
+      }
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+</script>

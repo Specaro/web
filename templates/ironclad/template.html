@@ -1,0 +1,372 @@
+<title>{{business.name}}</title>
+<style>
+  :root{
+    --navy:{{theme.base}};
+    --navy-2:{{theme.baseDeep}};
+    --navy-3:{{theme.baseDeep2}};
+    --steel:#7c93a3;
+    --steel-dim:#a9bbc7;
+    --safety:{{theme.accent}};
+    --safety-dim:{{theme.accentDim}};
+    --paper:#f3f5f6;
+    --card:#ffffff;
+    --line:rgba(15,36,56,.12);
+    --ok:#2f8f5b;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0a1620;
+      --card:#101f2e;
+      --navy:#0a1620;
+      --navy-2:#0f2436;
+      --navy-3:#153350;
+      --steel:#7c93a3;
+      --steel-dim:#8fa4b2;
+      --line:rgba(210,225,235,.14);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0a1620;
+    --card:#101f2e;
+    --navy:#0a1620;
+    --navy-2:#0f2436;
+    --navy-3:#153350;
+    --steel:#7c93a3;
+    --steel-dim:#8fa4b2;
+    --line:rgba(210,225,235,.14);
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--paper); color:var(--navy);
+    font-family: ui-sans-serif, "Segoe UI", Roboto, -apple-system, Arial, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  body{ color: var(--navy); }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) body{ color:#e7eef3; } }
+  :root[data-theme="dark"] body{ color:#e7eef3; }
+
+  ::selection{ background:var(--safety); color:var(--navy); }
+  a{ color:inherit; }
+
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 1.5rem; }
+
+  h1,h2,h3{
+    font-family: ui-sans-serif, Arial, sans-serif;
+    font-weight:800;
+    letter-spacing:-0.01em;
+    text-transform:uppercase;
+    text-wrap:balance;
+    margin:0;
+  }
+
+  .label{
+    font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--safety-dim); font-weight:700;
+  }
+
+  /* TOP BAR */
+  .topbar{
+    background:var(--navy); color:#dce6ee;
+    font-size:0.82rem;
+  }
+  .topbar .wrap{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:0.5rem 1.5rem; flex-wrap:wrap; gap:0.4rem;
+  }
+  .topbar .badges{ display:flex; gap:1.2rem; }
+  .topbar .badges span{ display:flex; align-items:center; gap:0.4rem; }
+  .dot-ok{ width:6px; height:6px; border-radius:50%; background:var(--ok); display:inline-block; }
+
+  header.site{
+    background:var(--navy); color:#fff;
+    border-bottom:3px solid var(--safety);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:1.1rem 1.5rem; max-width:1120px; margin:0 auto;
+  }
+  .brand{ display:flex; align-items:center; gap:0.7rem; }
+  .brand-mark{
+    width:2.4rem; height:2.4rem; background:var(--safety); color:var(--navy);
+    display:flex; align-items:center; justify-content:center; font-weight:900;
+    font-size:1.1rem; transform:rotate(45deg); border-radius:3px;
+  }
+  .brand-mark span{ transform:rotate(-45deg); }
+  .brand-name{ font-weight:800; font-size:1.2rem; text-transform:uppercase; letter-spacing:0.01em; }
+  .brand-name small{ display:block; font-size:0.62rem; letter-spacing:0.14em; color:var(--steel-dim); font-weight:600; text-transform:uppercase; }
+  .navlinks{ display:flex; gap:2rem; font-size:0.88rem; font-weight:600; }
+  .navlinks a{ text-decoration:none; color:#cfdbe4; }
+  .navlinks a:hover{ color:var(--safety); }
+  a:focus-visible, .btn:focus-visible{ outline:2px solid var(--safety); outline-offset:3px; }
+  @media (max-width:760px){ .navlinks{ display:none; } }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:0.5rem;
+    background:var(--safety); color:var(--navy);
+    padding:0.85rem 1.4rem; font-weight:800; text-decoration:none;
+    border-radius:3px; font-size:0.9rem; text-transform:uppercase; letter-spacing:0.02em;
+    transition:background .15s, transform .1s;
+  }
+  .btn:hover{ background:#ffbc3a; }
+  .btn.outline{ background:transparent; color:#fff; border:2px solid rgba(255,255,255,.4); }
+  .btn.outline:hover{ border-color:var(--safety); color:var(--safety); }
+
+  /* HERO */
+  .hero{
+    background:
+      radial-gradient(1100px 500px at 85% -10%, var(--navy-3), transparent 60%),
+      linear-gradient(180deg, var(--navy) 0%, var(--navy-2) 100%);
+    color:#fff;
+    padding:4.5rem 1.5rem 3.5rem;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.035) 0 2px, transparent 2px 26px);
+    pointer-events:none;
+  }
+  .hero-inner{ position:relative; max-width:1120px; margin:0 auto; display:grid; grid-template-columns:1.3fr 1fr; gap:3rem; align-items:center; }
+  @media (max-width:860px){ .hero-inner{ grid-template-columns:1fr; } }
+  .hero h1{ font-size:clamp(2.2rem,5vw,3.4rem); line-height:1.05; }
+  .hero h1 .hi{ color:var(--safety); }
+  .hero p.lede{ color:#c3d3de; font-size:1.05rem; max-width:44ch; margin-top:1.1rem; line-height:1.6; text-transform:none; }
+  .hero-actions{ display:flex; gap:0.9rem; margin-top:1.8rem; flex-wrap:wrap; }
+
+  .emergency-card{
+    background:var(--card); color:var(--navy); border-radius:6px;
+    padding:1.6rem; border-top:5px solid var(--safety);
+    box-shadow: 0 20px 45px rgba(5,15,25,.35);
+  }
+  :root[data-theme="dark"] .emergency-card{ color:#e7eef3; }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .emergency-card{ color:#e7eef3; } }
+  .emergency-card .label{ color:var(--safety-dim); }
+  .emergency-card .phone{ font-size:1.9rem; font-weight:800; margin:0.4rem 0 0.6rem; font-variant-numeric:tabular-nums; }
+  .emergency-card .note{ font-size:0.85rem; color:var(--steel); text-transform:none; }
+
+  section{ padding:4rem 0; border-bottom:1px solid var(--line); }
+  .section-head{ margin-bottom:2.4rem; max-width:60ch; }
+  .section-head h2{ font-size:clamp(1.6rem,3vw,2.2rem); margin-top:0.4rem; }
+  .section-head p{ text-transform:none; color:var(--steel); margin-top:0.6rem; font-weight:400; font-size:1rem; }
+
+  /* SERVICES */
+  .services-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.3rem; }
+  @media (max-width:860px){ .services-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:560px){ .services-grid{ grid-template-columns:1fr; } }
+  .svc-card{
+    background:var(--card); border:1px solid var(--line); border-radius:6px;
+    padding:1.6rem; transition:border-color .15s;
+  }
+  .svc-card:hover{ border-color:var(--safety); }
+  .svc-icon{ width:2.6rem; height:2.6rem; margin-bottom:1rem; color:var(--safety-dim); }
+  .svc-card h3{ font-size:1.02rem; text-transform:none; letter-spacing:0; margin-bottom:0.5rem; }
+  .svc-card p{ font-size:0.9rem; color:var(--steel); margin:0; line-height:1.55; }
+
+  /* TRUST STRIP */
+  .trust-strip{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:1.5rem;
+    background:var(--navy); color:#fff; border-radius:6px; padding:2rem;
+  }
+  @media (max-width:760px){ .trust-strip{ grid-template-columns:1fr 1fr; } }
+  .trust-item{ text-align:center; }
+  .trust-item .num{ font-size:1.9rem; font-weight:800; color:var(--safety); font-variant-numeric:tabular-nums; }
+  .trust-item .cap{ font-size:0.78rem; color:var(--steel-dim); text-transform:uppercase; letter-spacing:0.08em; margin-top:0.3rem; }
+
+  /* PROCESS */
+  .process{ display:grid; grid-template-columns:repeat(4,1fr); gap:1.5rem; counter-reset:step; }
+  @media (max-width:860px){ .process{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:560px){ .process{ grid-template-columns:1fr; } }
+  .step{ position:relative; padding-top:2.6rem; }
+  .step::before{
+    counter-increment:step; content: counter(step);
+    position:absolute; top:0; left:0;
+    width:2.1rem; height:2.1rem; border-radius:50%;
+    background:var(--navy); color:var(--safety);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:0.95rem;
+  }
+  .step h3{ font-size:0.95rem; text-transform:none; margin-bottom:0.4rem; }
+  .step p{ font-size:0.87rem; color:var(--steel); margin:0; text-transform:none; line-height:1.5; }
+
+  /* REVIEWS */
+  .quotes{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.3rem; }
+  @media (max-width:800px){ .quotes{ grid-template-columns:1fr; } }
+  .quote-card{ background:var(--card); border:1px solid var(--line); border-radius:6px; padding:1.5rem; }
+  .stars{ color:var(--safety-dim); letter-spacing:0.15em; font-size:0.85rem; margin-bottom:0.5rem; }
+  .quote-card p{ font-size:0.94rem; line-height:1.6; margin:0 0 1rem; text-transform:none; color:inherit; }
+  .quote-card .who{ font-size:0.8rem; color:var(--steel); text-transform:none; }
+
+  /* AREA / CTA */
+  .cta-block{
+    background:linear-gradient(135deg, var(--navy) 0%, var(--navy-3) 100%);
+    color:#fff; border-radius:8px; padding:3rem; text-align:center;
+  }
+  .cta-block h2{ font-size:clamp(1.6rem,3.4vw,2.3rem); }
+  .cta-block p{ text-transform:none; color:#c3d3de; margin-top:0.8rem; }
+  .cta-block .hero-actions{ justify-content:center; margin-top:1.6rem; }
+
+  footer{ padding:3rem 0 4rem; background:var(--navy); color:#c3d3de; }
+  .foot-grid{ display:grid; grid-template-columns:2fr 1fr 1fr; gap:2rem; }
+  @media (max-width:700px){ .foot-grid{ grid-template-columns:1fr; } }
+  footer h4{ color:#fff; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.9rem; }
+  footer ul{ list-style:none; padding:0; margin:0; font-size:0.88rem; display:grid; gap:0.55rem; }
+  footer .fine{ margin-top:2.2rem; font-size:0.78rem; color:var(--steel); border-top:1px solid rgba(255,255,255,.12); padding-top:1.2rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } }
+</style>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="badges">
+      <span><span class="dot-ok"></span> {{topbar.license_line}}</span>
+      <span>{{topbar.emergency_line}}</span>
+    </div>
+    <div>{{topbar.tagline}}</div>
+  </div>
+</div>
+
+<header class="site">
+  <nav class="nav">
+    <div class="brand">
+      <div class="brand-mark"><span>{{business.initial}}</span></div>
+      <div class="brand-name">{{business.short}}<small>{{business.tagline}}</small></div>
+    </div>
+    <div class="navlinks">
+      <a href="#services">{{nav.services_label}}</a>
+      <a href="#process">{{nav.process_label}}</a>
+      <a href="#reviews">{{nav.reviews_label}}</a>
+      <a href="#area">{{nav.area_label}}</a>
+    </div>
+    <a class="btn outline" href="tel:{{business.phone_href}}">{{business.phone}}</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <p class="label">{{hero.eyebrow}}</p>
+      <h1>{{{hero.headline_html}}}</h1>
+      <p class="lede">{{hero.lede}}</p>
+      <div class="hero-actions">
+        <a class="btn" href="tel:{{business.phone_href}}">{{hero.cta_primary}}</a>
+        <a class="btn outline" href="#services">{{hero.cta_secondary}}</a>
+      </div>
+    </div>
+    <div class="emergency-card">
+      <p class="label">{{hero.emergency_label}}</p>
+      <div class="phone">{{business.phone}}</div>
+      <p class="note">{{hero.emergency_note}}</p>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">{{services.eyebrow}}</p>
+      <h2>{{services.heading}}</h2>
+      <p>{{services.sub}}</p>
+    </div>
+    <div class="services-grid">
+      {{#services.items}}
+      <div class="svc-card">
+        <svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">{{{icon_svg}}}</svg>
+        <h3>{{name}}</h3>
+        <p>{{desc}}</p>
+      </div>
+      {{/services.items}}
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="trust-strip">
+      {{#trust.items}}
+      <div class="trust-item"><div class="num">{{num}}</div><div class="cap">{{cap}}</div></div>
+      {{/trust.items}}
+    </div>
+  </div>
+</section>
+
+<section id="process">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">{{process.eyebrow}}</p>
+      <h2>{{process.heading}}</h2>
+    </div>
+    <div class="process">
+      {{#process.steps}}
+      <div class="step">
+        <h3>{{title}}</h3>
+        <p>{{desc}}</p>
+      </div>
+      {{/process.steps}}
+    </div>
+  </div>
+</section>
+
+<section id="reviews">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">{{reviews.eyebrow}}</p>
+      <h2>{{reviews.heading}}</h2>
+    </div>
+    <div class="quotes">
+      {{#reviews.items}}
+      <div class="quote-card">
+        <div class="stars">{{stars}}</div>
+        <p>{{text}}</p>
+        <div class="who">{{author}}</div>
+      </div>
+      {{/reviews.items}}
+    </div>
+  </div>
+</section>
+
+<section id="area">
+  <div class="wrap">
+    <div class="cta-block">
+      <p class="label" style="color:var(--safety);">{{area.eyebrow}}</p>
+      <h2>{{area.heading}}</h2>
+      <p>{{area.list}}</p>
+      <div class="hero-actions">
+        <a class="btn" href="tel:{{business.phone_href}}">{{hero.cta_primary}}</a>
+        <a class="btn outline" href="mailto:{{business.email}}">{{area.cta_secondary_label}}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="brand" style="margin-bottom:0.8rem;">
+          <div class="brand-mark"><span>{{business.initial}}</span></div>
+          <div class="brand-name" style="color:#fff;">{{business.short}}<small>{{business.tagline}}</small></div>
+        </div>
+        <p style="max-width:34ch; font-size:0.88rem; text-transform:none; color:var(--steel-dim);">{{footer.description}}</p>
+      </div>
+      <div>
+        <h4>{{footer.contact_heading}}</h4>
+        <ul>
+          {{#footer.contact_lines}}
+          <li>{{.}}</li>
+          {{/footer.contact_lines}}
+        </ul>
+      </div>
+      <div>
+        <h4>{{footer.hours_heading}}</h4>
+        <ul>
+          {{#footer.hours_lines}}
+          <li>{{.}}</li>
+          {{/footer.hours_lines}}
+        </ul>
+      </div>
+    </div>
+    <div class="fine">{{footer.fine}}</div>
+  </div>
+</footer>

@@ -1,0 +1,93 @@
+{
+  "business": {
+    "name": "Ironclad Plumbing & Electric",
+    "short": "Ironclad",
+    "tagline": "Plumbing & Electric",
+    "initial": "I",
+    "phone": "(555) 019-3010",
+    "phone_href": "+15550193010",
+    "email": "jobs@ironcladpe.example",
+    "address": "1180 Foundry Rd, Cedarview"
+  },
+  "topbar": {
+    "license_line": "Licensed & insured, WA #IRON-4471",
+    "emergency_line": "24/7 emergency line",
+    "tagline": "Serving Cascade County since 2009"
+  },
+  "nav": {
+    "services_label": "Services",
+    "process_label": "How it works",
+    "reviews_label": "Reviews",
+    "area_label": "Service area"
+  },
+  "hero": {
+    "eyebrow": "Same-day service · Cascade County",
+    "headline_html": "When it breaks at<br><span class=\"hi\">2am</span>, we still answer.",
+    "lede": "Licensed plumbers and electricians on call around the clock. No overtime fees for nights or weekends — the quote we give you is the price you pay.",
+    "cta_primary": "Call (555) 019-3010",
+    "cta_secondary": "See services",
+    "emergency_label": "Emergency? Call now",
+    "emergency_note": "Average dispatch time: 41 minutes, day or night."
+  },
+  "services": {
+    "eyebrow": "What we handle",
+    "heading": "Plumbing and electrical, one call",
+    "sub": "Every technician is cross-trained, so a single visit can cover both trades — no waiting on a second contractor.",
+    "items": [
+      { "name": "Water heaters", "desc": "Repair, replacement, and tankless conversions. Most standard installs completed same day.", "icon_svg": "<path d=\"M7 4h10v3a5 5 0 01-10 0V4z\"/><path d=\"M12 12v6M9 21h6\"/>" },
+      { "name": "Drain & sewer", "desc": "Camera inspection, hydro-jetting, and trenchless repair for slow or backed-up lines.", "icon_svg": "<path d=\"M4 12h4l2-4 4 8 2-4h4\"/>" },
+      { "name": "Panel upgrades", "desc": "100–200 amp service upgrades to keep up with modern appliances and EV chargers.", "icon_svg": "<path d=\"M13 2L4 14h6l-1 8 9-12h-6z\"/>" },
+      { "name": "Lighting & wiring", "desc": "Fixture installs, rewiring for older homes, and troubleshooting for flickering circuits.", "icon_svg": "<circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1\"/>" },
+      { "name": "Leak detection", "desc": "Non-invasive detection for slab and wall leaks before they become drywall repairs.", "icon_svg": "<path d=\"M12 3v2M12 19v2M5 12H3M21 12h-2M6 6l1.4 1.4M18 6l-1.4 1.4M6 18l1.4-1.4M18 18l-1.4-1.4\"/><circle cx=\"12\" cy=\"12\" r=\"4\"/>" },
+      { "name": "Remodel rough-in", "desc": "Full plumbing and electrical rough-in for kitchen and bathroom remodels, on your GC's timeline.", "icon_svg": "<rect x=\"3\" y=\"7\" width=\"18\" height=\"12\" rx=\"2\"/><path d=\"M7 7V5a2 2 0 012-2h6a2 2 0 012 2v2\"/>" }
+    ]
+  },
+  "trust": {
+    "items": [
+      { "num": "17", "cap": "Years in Cascade County" },
+      { "num": "4.9", "cap": "Average rating, 830+ reviews" },
+      { "num": "24/7", "cap": "Emergency dispatch" },
+      { "num": "$0", "cap": "Overtime fees, nights & weekends" }
+    ]
+  },
+  "process": {
+    "eyebrow": "How it works",
+    "heading": "From call to fixed, same day",
+    "steps": [
+      { "title": "Call or text", "desc": "Tell us what's happening. We'll give you an upfront price range before anyone drives out." },
+      { "title": "We diagnose on site", "desc": "A licensed tech inspects the issue and gives you a flat-rate quote before any work starts." },
+      { "title": "You approve, we fix", "desc": "Nothing happens without your sign-off. Most jobs are completed in a single visit." },
+      { "title": "Backed by warranty", "desc": "Every repair carries a 2-year workmanship warranty, parts and labor." }
+    ]
+  },
+  "reviews": {
+    "eyebrow": "Cascade County trusts us",
+    "heading": "What customers say",
+    "items": [
+      { "stars": "★★★★★", "text": "\"Pipe burst at 11pm on a Sunday. They picked up on the second ring and had someone here in 35 minutes.\"", "author": "Marcus D. — Riverside" },
+      { "stars": "★★★★★", "text": "\"Quoted me a flat price for the panel upgrade and that's exactly what I paid. No surprise line items.\"", "author": "Lena F. — Fairview Heights" },
+      { "stars": "★★★★★", "text": "\"Fixed the drain and noticed a wiring issue in the same visit. Saved me from booking a second contractor.\"", "author": "Robert C. — Old Mill District" }
+    ]
+  },
+  "area": {
+    "eyebrow": "Serving all of Cascade County",
+    "heading": "Ready when you need us",
+    "list": "Cedarview · Riverside · Fairview Heights · Old Mill District · Northgate · Downtown",
+    "cta_secondary_label": "Request a quote"
+  },
+  "footer": {
+    "description": "Licensed, bonded, and insured. WA license #IRON-4471. 24/7 emergency dispatch across Cascade County.",
+    "contact_heading": "Contact",
+    "contact_lines": ["(555) 019-3010", "jobs@ironcladpe.example", "1180 Foundry Rd, Cedarview"],
+    "hours_heading": "Hours",
+    "hours_lines": ["Emergency line: 24/7", "Office: Mon–Fri, 7am–6pm", "Sat: 8am–2pm"],
+    "fine": "© 2026 Ironclad Plumbing & Electric. Demo site built by Specaro Web."
+  },
+  "theme": {
+    "base": "#0f2438",
+    "baseDeep": "#153350",
+    "baseDeep2": "#1b3f61",
+    "accent": "#f0ac1e",
+    "accentDim": "#c98d13"
+  }
+}

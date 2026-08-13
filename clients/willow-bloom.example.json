@@ -1,0 +1,94 @@
+{
+  "business": {
+    "name": "Willow & Bloom",
+    "phone_href": "+15550176622",
+    "email": "hello@willowandbloom.example"
+  },
+  "nav": {
+    "services_label": "Services",
+    "gallery_label": "Gallery",
+    "team_label": "Our stylists",
+    "book_label": "Book"
+  },
+  "copy": {
+    "book_cta": "Book a visit"
+  },
+  "hero": {
+    "eyebrow": "Hair & skin studio · Est. 2016",
+    "headline_html": "Slow down.<br>Come back to <em>yourself.</em>",
+    "lede": "A quiet studio for cut, color, and skin — built around the idea that an hour to yourself shouldn't feel rushed.",
+    "secondary_cta": "View services & pricing",
+    "art_alt": "Soft abstract botanical illustration in sage and blush tones"
+  },
+  "services": {
+    "eyebrow": "Services",
+    "heading": "Considered, one client at a time",
+    "sub": "We book one client per stylist per hour — no double-booking, no rush.",
+    "groups": [
+      {
+        "name": "Hair",
+        "items": [
+          { "name": "Signature cut & style", "desc": "Consultation, wash, cut, blow-dry finish", "price": "$85" },
+          { "name": "Full color", "desc": "Single-process color, gloss, style", "price": "$140+" },
+          { "name": "Balayage", "desc": "Hand-painted highlights, toner, style", "price": "$220+" }
+        ]
+      },
+      {
+        "name": "Skin",
+        "items": [
+          { "name": "Signature facial", "desc": "60 minutes, double cleanse, custom mask", "price": "$110" },
+          { "name": "Gua sha lift ritual", "desc": "75 minutes, lymphatic massage, oils", "price": "$135" }
+        ]
+      }
+    ]
+  },
+  "gallery": {
+    "eyebrow": "The studio",
+    "heading": "A look inside"
+  },
+  "team": {
+    "eyebrow": "Meet the studio",
+    "heading": "Your stylists",
+    "members": [
+      { "name": "Maren Voss", "role": "Owner & Colorist", "bio": "Ten years behind the chair, specializing in dimensional color and balayage." },
+      { "name": "Julia Okafor", "role": "Senior Stylist", "bio": "Precision cutting and texture work, trained in Copenhagen and New York." },
+      { "name": "Ben Castillo", "role": "Esthetician", "bio": "Licensed esthetician focused on results-driven, low-irritation facials." }
+    ]
+  },
+  "reviews": {
+    "eyebrow": "Reviews",
+    "heading": "From our clients",
+    "items": [
+      { "text": "\"First salon where I've never felt rushed out the door. Worth every minute of the drive.\"", "author": "Claire T." },
+      { "text": "\"Maren gave me the most natural balayage I've ever had. I finally stopped bringing in reference photos.\"", "author": "Sofia R." },
+      { "text": "\"The gua sha ritual is now a non-negotiable monthly thing for me. My skin has never looked better.\"", "author": "Hana W." }
+    ]
+  },
+  "book": {
+    "eyebrow": "Visit us",
+    "heading": "Ready when you are",
+    "lede": "Walk-ins accepted when space allows, but we recommend booking ahead — especially for color services.",
+    "call_cta": "Call (555) 017-6622",
+    "email_cta": "Email us",
+    "rows": [
+      { "label": "Address", "value": "28 Linden Court, Riverdale" },
+      { "label": "Phone", "value": "(555) 017-6622" },
+      { "label": "Tue–Fri", "value": "10am–7pm" },
+      { "label": "Saturday", "value": "9am–4pm" },
+      { "label": "Sun–Mon", "value": "Closed" }
+    ]
+  },
+  "footer": {
+    "fine": "© 2026 Willow & Bloom Studio. Demo site built by Specaro Web."
+  },
+  "theme": {
+    "sage": "#5c6e52",
+    "sageDeep": "#3c4a37",
+    "blush": "#dcb9a8",
+    "blushDeep": "#c48f79",
+    "sageDark": "#8ea281",
+    "sageDeepDark": "#a6bb98",
+    "blushDark": "#d8ac97",
+    "blushDeepDark": "#e0b8a2"
+  }
+}
