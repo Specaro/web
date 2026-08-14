@@ -108,8 +108,29 @@
 
   .book-card{
     background:var(--card); border:1px solid var(--line); border-radius:16px;
-    padding:1.8rem; box-shadow: 0 24px 50px -20px rgba(30,42,40,.25);
+    overflow:hidden; box-shadow: 0 24px 50px -20px rgba(30,42,40,.25);
   }
+  .book-card .photo{
+    position:relative; aspect-ratio:16/10; overflow:hidden;
+    background:var(--accent);
+  }
+  .book-card .photo img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    filter:saturate(0.85);
+    mix-blend-mode:luminosity;
+    opacity:0.92;
+  }
+  .book-card .photo::after{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(160deg, color-mix(in srgb, var(--accent) 55%, transparent), color-mix(in srgb, var(--clay) 35%, transparent));
+    mix-blend-mode:multiply;
+  }
+  .book-card .photo::before{
+    content:""; position:absolute; inset:0 0 auto 0; height:40%;
+    background:linear-gradient(180deg, rgba(0,0,0,.18), transparent);
+    z-index:1;
+  }
+  .book-card .body{ padding:1.8rem; }
   .book-card .badge{
     display:inline-block; background:color-mix(in srgb, var(--clay) 16%, transparent);
     color:var(--clay); font-size:0.78rem; font-weight:700; padding:0.3rem 0.7rem;
@@ -224,10 +245,15 @@
       </div>
     </div>
     <div class="book-card">
-      <span class="badge">{{hero.card_badge}}</span>
-      <h3>{{hero.card_heading}}</h3>
-      <p>{{hero.card_body}}</p>
-      <a class="btn" href="tel:{{business.phone_href}}" style="width:100%; justify-content:center;">{{business.phone}}</a>
+      {{#hero.card_photo}}
+      <div class="photo"><img src="{{.}}" alt="{{hero.card_photo_alt}}"></div>
+      {{/hero.card_photo}}
+      <div class="body">
+        <span class="badge">{{hero.card_badge}}</span>
+        <h3>{{hero.card_heading}}</h3>
+        <p>{{hero.card_body}}</p>
+        <a class="btn" href="tel:{{business.phone_href}}" style="width:100%; justify-content:center;">{{business.phone}}</a>
+      </div>
     </div>
   </div>
 </section>

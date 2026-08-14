@@ -35,7 +35,7 @@ function render(template, data) {
       return render(inner, { ...data, ...value });
     }
     if (value) {
-      return render(inner, data);
+      return render(inner, { ...data, ".": value });
     }
     return "";
   });

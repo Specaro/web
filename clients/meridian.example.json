@@ -22,27 +22,65 @@
     "secondary_cta": "See our approach",
     "card_badge": "New patients",
     "card_heading": "Same-week availability",
-    "card_body": "Your first visit includes a full assessment and a plan you'll actually understand — no long-term contracts."
+    "card_body": "Your first visit includes a full assessment and a plan you'll actually understand — no long-term contracts.",
+    "card_photo": "data:image/jpeg;base64,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",
+    "card_photo_alt": "A chiropractor performing a spinal adjustment on a patient lying face-down on a treatment table"
   },
   "services": {
     "eyebrow": "How we treat",
     "heading": "Care built around how you actually move",
     "sub": "Every plan starts with a real exam, not a generic protocol.",
     "items": [
-      { "name": "Spinal adjustments", "desc": "Manual and instrument-assisted adjustments for chronic and acute back or neck pain.", "icon_svg": "<ellipse cx=\"12\" cy=\"4\" rx=\"3\" ry=\"1.4\"/><ellipse cx=\"12\" cy=\"9\" rx=\"3\" ry=\"1.4\"/><ellipse cx=\"12\" cy=\"14\" rx=\"3\" ry=\"1.4\"/><ellipse cx=\"12\" cy=\"19\" rx=\"3\" ry=\"1.4\"/><path d=\"M12 5.4v3.2M12 10.4v3.2M12 15.4v3.2\"/>" },
-      { "name": "Sports injury rehab", "desc": "Recovery plans for runners, lifters, and weekend athletes, built with your season in mind.", "icon_svg": "<circle cx=\"13\" cy=\"4\" r=\"1.6\"/><path d=\"M10 21l2-6 3 2 2 5M9 12l3-2 2 3 4-1M11 10L8 8l-3 2\"/>" },
-      { "name": "Prenatal chiropractic", "desc": "Webster-technique certified care to ease pregnancy-related back and pelvic pain.", "icon_svg": "<path d=\"M12 20s-7-4.35-9-9.1C1.7 7.3 3.9 4 7.2 4c2 0 3.4 1.1 4.8 2.9C13.4 5.1 14.8 4 16.8 4c3.3 0 5.5 3.3 4.2 6.9C19 15.65 12 20 12 20z\"/>" },
-      { "name": "Therapeutic massage", "desc": "Licensed massage therapy paired with your adjustment plan to speed up recovery.", "icon_svg": "<path d=\"M8 13V6a1.5 1.5 0 013 0v6M11 12V4.5a1.5 1.5 0 013 0V12M14 12.5V6a1.5 1.5 0 013 0v8c0 4-3 7-7 7h-1c-3 0-4-1-5.5-3L2 14.5c-.6-1 .3-2.2 1.4-1.8L6 13.7\"/>" },
-      { "name": "Posture & ergonomics", "desc": "Desk-setup and movement assessments for chronic neck and shoulder tension.", "icon_svg": "<circle cx=\"12\" cy=\"5\" r=\"2\"/><path d=\"M12 7v6M8 20l4-7 4 7M9 12h6\"/>" },
-      { "name": "Pediatric chiropractic", "desc": "Gentle, low-force adjustments for kids, from infants to teens.", "icon_svg": "<circle cx=\"9\" cy=\"7\" r=\"2\"/><circle cx=\"16\" cy=\"9\" r=\"1.5\"/><path d=\"M4 20v-2a4 4 0 014-4h1a4 4 0 014 4M14 20v-1.5a3 3 0 013-3h0a3 3 0 013 3V20\"/>" }
+      {
+        "name": "Spinal adjustments",
+        "desc": "Manual and instrument-assisted adjustments for chronic and acute back or neck pain.",
+        "icon_svg": "<ellipse cx=\"12\" cy=\"4\" rx=\"3\" ry=\"1.4\"/><ellipse cx=\"12\" cy=\"9\" rx=\"3\" ry=\"1.4\"/><ellipse cx=\"12\" cy=\"14\" rx=\"3\" ry=\"1.4\"/><ellipse cx=\"12\" cy=\"19\" rx=\"3\" ry=\"1.4\"/><path d=\"M12 5.4v3.2M12 10.4v3.2M12 15.4v3.2\"/>"
+      },
+      {
+        "name": "Sports injury rehab",
+        "desc": "Recovery plans for runners, lifters, and weekend athletes, built with your season in mind.",
+        "icon_svg": "<circle cx=\"13\" cy=\"4\" r=\"1.6\"/><path d=\"M10 21l2-6 3 2 2 5M9 12l3-2 2 3 4-1M11 10L8 8l-3 2\"/>"
+      },
+      {
+        "name": "Prenatal chiropractic",
+        "desc": "Webster-technique certified care to ease pregnancy-related back and pelvic pain.",
+        "icon_svg": "<path d=\"M12 20s-7-4.35-9-9.1C1.7 7.3 3.9 4 7.2 4c2 0 3.4 1.1 4.8 2.9C13.4 5.1 14.8 4 16.8 4c3.3 0 5.5 3.3 4.2 6.9C19 15.65 12 20 12 20z\"/>"
+      },
+      {
+        "name": "Therapeutic massage",
+        "desc": "Licensed massage therapy paired with your adjustment plan to speed up recovery.",
+        "icon_svg": "<path d=\"M8 13V6a1.5 1.5 0 013 0v6M11 12V4.5a1.5 1.5 0 013 0V12M14 12.5V6a1.5 1.5 0 013 0v8c0 4-3 7-7 7h-1c-3 0-4-1-5.5-3L2 14.5c-.6-1 .3-2.2 1.4-1.8L6 13.7\"/>"
+      },
+      {
+        "name": "Posture & ergonomics",
+        "desc": "Desk-setup and movement assessments for chronic neck and shoulder tension.",
+        "icon_svg": "<circle cx=\"12\" cy=\"5\" r=\"2\"/><path d=\"M12 7v6M8 20l4-7 4 7M9 12h6\"/>"
+      },
+      {
+        "name": "Pediatric chiropractic",
+        "desc": "Gentle, low-force adjustments for kids, from infants to teens.",
+        "icon_svg": "<circle cx=\"9\" cy=\"7\" r=\"2\"/><circle cx=\"16\" cy=\"9\" r=\"1.5\"/><path d=\"M4 20v-2a4 4 0 014-4h1a4 4 0 014 4M14 20v-1.5a3 3 0 013-3h0a3 3 0 013 3V20\"/>"
+      }
     ]
   },
   "trust": {
     "items": [
-      { "num": "9", "cap": "Years serving Brookhaven" },
-      { "num": "4.9", "cap": "Average rating, 540+ reviews" },
-      { "num": "48hr", "cap": "Average time to first adjustment" },
-      { "num": "12", "cap": "Insurance plans accepted" }
+      {
+        "num": "9",
+        "cap": "Years serving Brookhaven"
+      },
+      {
+        "num": "4.9",
+        "cap": "Average rating, 540+ reviews"
+      },
+      {
+        "num": "48hr",
+        "cap": "Average time to first adjustment"
+      },
+      {
+        "num": "12",
+        "cap": "Insurance plans accepted"
+      }
     ]
   },
   "process": {
@@ -50,43 +88,101 @@
     "heading": "What your first three weeks look like",
     "sub": "Most patients notice a difference well before treatment ends.",
     "steps": [
-      { "title": "Book & complete intake", "desc": "Fill out your history online before you arrive — your first visit is exam time, not paperwork time." },
-      { "title": "Full assessment", "desc": "Posture, movement, and a review of any imaging you bring, so treatment targets the actual cause." },
-      { "title": "First adjustment", "desc": "Most patients are treated the same visit as their assessment, not sent home to \"wait and see.\"" },
-      { "title": "A plan with an end date", "desc": "You'll get a written care plan with a target number of visits, reassessed every few weeks." }
+      {
+        "title": "Book & complete intake",
+        "desc": "Fill out your history online before you arrive — your first visit is exam time, not paperwork time."
+      },
+      {
+        "title": "Full assessment",
+        "desc": "Posture, movement, and a review of any imaging you bring, so treatment targets the actual cause."
+      },
+      {
+        "title": "First adjustment",
+        "desc": "Most patients are treated the same visit as their assessment, not sent home to \"wait and see.\""
+      },
+      {
+        "title": "A plan with an end date",
+        "desc": "You'll get a written care plan with a target number of visits, reassessed every few weeks."
+      }
     ]
   },
   "team": {
     "eyebrow": "Meet the team",
     "heading": "Your providers",
     "members": [
-      { "name": "Dr. Alicia Moreno, DC", "role": "Founder & Chiropractor", "bio": "14 years in practice, certified in sports rehabilitation and prenatal care." },
-      { "name": "Dr. Sam Whitfield, DC", "role": "Chiropractor", "bio": "Focuses on post-injury recovery and works closely with two local physical therapy clinics." },
-      { "name": "Priya Nandan, LMT", "role": "Licensed Massage Therapist", "bio": "Pairs therapeutic massage with adjustment plans for faster recovery." }
+      {
+        "name": "Dr. Alicia Moreno, DC",
+        "role": "Founder & Chiropractor",
+        "bio": "14 years in practice, certified in sports rehabilitation and prenatal care."
+      },
+      {
+        "name": "Dr. Sam Whitfield, DC",
+        "role": "Chiropractor",
+        "bio": "Focuses on post-injury recovery and works closely with two local physical therapy clinics."
+      },
+      {
+        "name": "Priya Nandan, LMT",
+        "role": "Licensed Massage Therapist",
+        "bio": "Pairs therapeutic massage with adjustment plans for faster recovery."
+      }
     ]
   },
   "reviews": {
     "eyebrow": "Patient stories",
     "heading": "What patients say",
     "items": [
-      { "stars": "★★★★★", "text": "\"I'd tried two other chiropractors before Meridian. This is the first place that actually explained what was going on with my back.\"", "author": "Grace L. — patient since 2022" },
-      { "stars": "★★★★★", "text": "\"Dr. Moreno got me back to running six weeks after a hip injury I thought would sideline me all season.\"", "author": "Marcus T. — marathon runner" },
-      { "stars": "★★★★★", "text": "\"Saw me the same day I called with sudden lower back pain. Didn't expect that from a chiropractic office.\"", "author": "Denise K. — first-time patient" }
+      {
+        "stars": "★★★★★",
+        "text": "\"I'd tried two other chiropractors before Meridian. This is the first place that actually explained what was going on with my back.\"",
+        "author": "Grace L. — patient since 2022"
+      },
+      {
+        "stars": "★★★★★",
+        "text": "\"Dr. Moreno got me back to running six weeks after a hip injury I thought would sideline me all season.\"",
+        "author": "Marcus T. — marathon runner"
+      },
+      {
+        "stars": "★★★★★",
+        "text": "\"Saw me the same day I called with sudden lower back pain. Didn't expect that from a chiropractic office.\"",
+        "author": "Denise K. — first-time patient"
+      }
     ]
   },
   "visit": {
     "eyebrow": "Visit us",
     "heading": "Plan your first visit",
     "rows": [
-      { "label": "Address", "value": "215 Birchwood Ave, Brookhaven" },
-      { "label": "Phone", "value": "(555) 028-4410" },
-      { "label": "Mon–Thu", "value": "8am–6pm" },
-      { "label": "Friday", "value": "8am–2pm" },
-      { "label": "Sat–Sun", "value": "Closed" }
+      {
+        "label": "Address",
+        "value": "215 Birchwood Ave, Brookhaven"
+      },
+      {
+        "label": "Phone",
+        "value": "(555) 028-4410"
+      },
+      {
+        "label": "Mon–Thu",
+        "value": "8am–6pm"
+      },
+      {
+        "label": "Friday",
+        "value": "8am–2pm"
+      },
+      {
+        "label": "Sat–Sun",
+        "value": "Closed"
+      }
     ],
     "cta_label": "Call to book",
     "insurance_label": "Insurance accepted",
-    "insurance": ["Blue Cross Blue Shield", "Aetna", "Cigna", "UnitedHealthcare", "Medicare", "Kaiser Permanente"]
+    "insurance": [
+      "Blue Cross Blue Shield",
+      "Aetna",
+      "Cigna",
+      "UnitedHealthcare",
+      "Medicare",
+      "Kaiser Permanente"
+    ]
   },
   "footer": {
     "fine": "© 2026 Meridian Chiropractic, Brookhaven. Demo site built by Specaro Web."
