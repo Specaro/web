@@ -12,13 +12,14 @@ scripts/build.js                          combines a template + a client file in
 dist/                                     build output (generated, not hand-edited)
 ```
 
-Three templates exist today, one per vertical:
+Four templates exist today, one per vertical:
 
 | Template | Best for | Preview |
 |---|---|---|
 | `ember-oak` | Restaurants, cafes, bars | menu, story, reviews, reservations |
 | `ironclad` | Home services (plumbing, electrical, HVAC, landscaping) | services, trust badges, emergency call CTA |
 | `willow-bloom` | Salons, spas, wellness studios | services & pricing, gallery, stylist bios, booking |
+| `meridian` | Medical & wellness offices (chiropractors, dentists, therapists) | services, new-patient process, provider bios, insurance & booking |
 
 Each template ships with an example config (`clients/<template-name>.example.json`)
 reproducing the original demo content, so you can see exactly what every field does.
@@ -51,8 +52,8 @@ Every config is a plain JSON file. Values are inserted as **plain text**
 - Fields ending in the template's own `_html` convention (e.g. `hero.headline_html`,
   `business.wordmark_html`) — these intentionally allow a bit of inline markup,
   like an italic accent word or a `<br>`, and are inserted raw.
-- `icon_svg` fields in the `ironclad` template — raw SVG path data for each
-  service icon.
+- `icon_svg` fields in the `ironclad` and `meridian` templates — raw SVG path
+  data for each service icon.
 
 Repeated content (menu categories, services, reviews, team members, etc.) is a
 JSON array under a key the template loops over — add or remove entries freely,
@@ -60,9 +61,9 @@ the layout adapts.
 
 `theme` holds each template's accent colors as hex values; the neutral base
 (parchment/near-black for `ember-oak`, navy for `ironclad`, sage/cream for
-`willow-bloom`) is part of that template's identity and isn't meant to be
-swapped — pick the template that already matches the client's tone, then tune
-the accent.
+`willow-bloom`, cool off-white for `meridian`) is part of that template's
+identity and isn't meant to be swapped — pick the template that already
+matches the client's tone, then tune the accent.
 
 ## Adding a new template (new vertical)
 

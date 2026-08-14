@@ -1,0 +1,351 @@
+<title>{{business.name}}</title>
+<style>
+  :root{
+    --paper:#f4f6f5;
+    --paper-dim:#eaeeec;
+    --ink:#1e2a28;
+    --ink-soft:#55645f;
+    --accent:{{theme.accent}};
+    --accent-hot:{{theme.accentHot}};
+    --clay:{{theme.secondary}};
+    --line: rgba(30,42,40,.13);
+    --card:#ffffff;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#121615;
+      --paper-dim:#181d1c;
+      --ink:#e9efec;
+      --ink-soft:#a9b6b1;
+      --accent:{{theme.accentDark}};
+      --accent-hot:{{theme.accentHotDark}};
+      --clay:{{theme.secondaryDark}};
+      --line: rgba(233,239,236,.14);
+      --card:#181f1d;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#121615;
+    --paper-dim:#181d1c;
+    --ink:#e9efec;
+    --ink-soft:#a9b6b1;
+    --accent:{{theme.accentDark}};
+    --accent-hot:{{theme.accentHotDark}};
+    --clay:{{theme.secondaryDark}};
+    --line: rgba(233,239,236,.14);
+    --card:#181f1d;
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family: ui-sans-serif, "Segoe UI", -apple-system, Roboto, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--accent); color:var(--paper); }
+  a{ color:inherit; }
+
+  h1,h2,h3{
+    font-family: ui-sans-serif, -apple-system, "Segoe UI", sans-serif;
+    font-weight:650;
+    letter-spacing:-0.015em;
+    text-wrap:balance;
+    margin:0;
+  }
+
+  .label{
+    font-size:0.74rem; letter-spacing:0.13em; text-transform:uppercase;
+    color:var(--accent); font-weight:700;
+  }
+
+  .wrap{ max-width:1100px; margin:0 auto; padding:0 1.5rem; }
+
+  header.site{
+    position:sticky; top:0; z-index:20;
+    background:color-mix(in srgb, var(--paper) 87%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{ display:flex; align-items:center; justify-content:space-between; padding:1.15rem 1.5rem; max-width:1100px; margin:0 auto; }
+  .brand{ display:flex; align-items:center; gap:0.65rem; }
+  .brand-mark{
+    width:2.1rem; height:2.1rem; border-radius:50%;
+    background:var(--accent); position:relative; flex:none;
+  }
+  .brand-mark::after{
+    content:""; position:absolute; inset:0; margin:auto;
+    width:0.85rem; height:0.85rem; border-radius:50%;
+    background:var(--card);
+  }
+  .brand-name{ font-weight:700; font-size:1.15rem; letter-spacing:-0.01em; }
+  .navlinks{ display:flex; gap:2rem; font-size:0.9rem; }
+  .navlinks a{ text-decoration:none; color:var(--ink-soft); transition:color .15s; }
+  .navlinks a:hover{ color:var(--accent); }
+  a:focus-visible, .btn:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+  @media (max-width:720px){ .navlinks{ display:none; } }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:0.5rem;
+    background:var(--accent); color:#fdfdfb;
+    padding:0.8rem 1.4rem; border-radius:8px; text-decoration:none;
+    font-size:0.9rem; font-weight:600; transition: background .15s;
+  }
+  .btn:hover{ background:var(--accent-hot); }
+  .btn.ghost{ background:transparent; color:var(--ink); border:1.5px solid var(--line); }
+  .btn.ghost:hover{ border-color:var(--accent); color:var(--accent); }
+
+  /* HERO */
+  .hero{ padding:4.5rem 1.5rem 4rem; border-bottom:1px solid var(--line); }
+  .hero-inner{
+    max-width:1100px; margin:0 auto;
+    display:grid; grid-template-columns:1.2fr 1fr; gap:3.5rem; align-items:center;
+  }
+  @media (max-width:880px){ .hero-inner{ grid-template-columns:1fr; } }
+  .hero h1{ font-size:clamp(2.3rem,4.6vw,3.4rem); line-height:1.08; }
+  .hero h1 .soft{ color:var(--accent); }
+  .hero p.lede{ max-width:44ch; font-size:1.08rem; color:var(--ink-soft); margin-top:1.2rem; line-height:1.6; }
+  .hero-actions{ display:flex; gap:1rem; margin-top:2rem; flex-wrap:wrap; }
+
+  .book-card{
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:1.8rem; box-shadow: 0 24px 50px -20px rgba(30,42,40,.25);
+  }
+  .book-card .badge{
+    display:inline-block; background:color-mix(in srgb, var(--clay) 16%, transparent);
+    color:var(--clay); font-size:0.78rem; font-weight:700; padding:0.3rem 0.7rem;
+    border-radius:999px; margin-bottom:1rem;
+  }
+  .book-card h3{ font-size:1.2rem; margin-bottom:0.5rem; }
+  .book-card p{ color:var(--ink-soft); font-size:0.9rem; line-height:1.55; margin:0 0 1.3rem; }
+
+  section{ padding:4.3rem 0; border-bottom:1px solid var(--line); }
+  .section-head{ max-width:56ch; margin-bottom:2.5rem; }
+  .section-head h2{ font-size:clamp(1.7rem,3.2vw,2.4rem); margin-top:0.4rem; }
+  .section-head p{ color:var(--ink-soft); margin-top:0.7rem; line-height:1.6; }
+
+  /* SERVICES */
+  .services-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.3rem; }
+  @media (max-width:880px){ .services-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:560px){ .services-grid{ grid-template-columns:1fr; } }
+  .svc-card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:1.6rem; }
+  .svc-icon{
+    width:2.5rem; height:2.5rem; border-radius:10px; margin-bottom:1rem;
+    background:color-mix(in srgb, var(--accent) 14%, transparent);
+    display:flex; align-items:center; justify-content:center; color:var(--accent);
+  }
+  .svc-card h3{ font-size:1.02rem; margin-bottom:0.5rem; }
+  .svc-card p{ font-size:0.9rem; color:var(--ink-soft); margin:0; line-height:1.55; }
+
+  /* TRUST STRIP */
+  .trust-strip{ display:grid; grid-template-columns:repeat(4,1fr); gap:1.5rem; }
+  @media (max-width:760px){ .trust-strip{ grid-template-columns:1fr 1fr; } }
+  .trust-item{ text-align:center; padding:1.6rem 1rem; background:var(--card); border:1px solid var(--line); border-radius:14px; }
+  .trust-item .num{ font-size:1.9rem; font-weight:700; color:var(--accent); font-variant-numeric:tabular-nums; }
+  .trust-item .cap{ font-size:0.8rem; color:var(--ink-soft); margin-top:0.35rem; }
+
+  /* PROCESS */
+  .process{ counter-reset:step; display:flex; flex-direction:column; }
+  .step{
+    display:grid; grid-template-columns:3rem 1fr; gap:1.3rem;
+    padding:1.5rem 0; border-top:1px solid var(--line);
+  }
+  .process .step:last-child{ border-bottom:1px solid var(--line); }
+  .step::before{
+    counter-increment:step; content: counter(step, decimal-leading-zero);
+    font-family: ui-sans-serif, sans-serif; font-weight:700; font-size:1.1rem;
+    color:var(--accent);
+  }
+  .step h3{ font-size:1.02rem; margin-bottom:0.35rem; }
+  .step p{ font-size:0.92rem; color:var(--ink-soft); margin:0; line-height:1.55; max-width:60ch; }
+
+  /* TEAM */
+  .team{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.6rem; }
+  @media (max-width:800px){ .team{ grid-template-columns:1fr; } }
+  .provider{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:1.6rem; }
+  .provider .avatar{
+    width:3.4rem; height:3.4rem; border-radius:50%; margin-bottom:1rem;
+    background:linear-gradient(155deg, var(--accent), var(--clay));
+  }
+  .provider h3{ font-size:1.05rem; }
+  .provider .role{ color:var(--clay); font-size:0.78rem; text-transform:uppercase; letter-spacing:0.08em; font-weight:700; margin:0.3rem 0 0.7rem; }
+  .provider p{ color:var(--ink-soft); font-size:0.88rem; line-height:1.55; margin:0; }
+
+  /* REVIEWS */
+  .quotes{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem; }
+  @media (max-width:800px){ .quotes{ grid-template-columns:1fr; } }
+  .quote-card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:1.6rem; }
+  .stars{ color:var(--clay); letter-spacing:0.15em; font-size:0.85rem; margin-bottom:0.6rem; }
+  .quote-card p{ font-size:0.96rem; line-height:1.6; margin:0 0 1rem; }
+  .quote-card .who{ font-size:0.82rem; color:var(--ink-soft); }
+
+  /* VISIT / INSURANCE */
+  .visit{ display:grid; grid-template-columns:1fr 1fr; gap:3rem; }
+  @media (max-width:800px){ .visit{ grid-template-columns:1fr; } }
+  .info-row{ display:flex; justify-content:space-between; padding:0.85rem 0; border-bottom:1px solid var(--line); font-size:0.95rem; }
+  .info-row span:first-child{ color:var(--ink-soft); }
+  .insurance-list{ display:flex; flex-wrap:wrap; gap:0.6rem; margin-top:1rem; }
+  .insurance-chip{
+    background:var(--paper-dim); border:1px solid var(--line); border-radius:999px;
+    padding:0.4rem 0.9rem; font-size:0.82rem; color:var(--ink-soft);
+  }
+
+  footer{ padding:3rem 0 4rem; }
+  .foot-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  footer .fine{ color:var(--ink-soft); font-size:0.82rem; }
+
+  @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
+</style>
+
+<header class="site">
+  <nav class="nav">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div class="brand-name">{{business.name}}</div>
+    </div>
+    <div class="navlinks">
+      <a href="#services">{{nav.services_label}}</a>
+      <a href="#process">{{nav.process_label}}</a>
+      <a href="#team">{{nav.team_label}}</a>
+      <a href="#reviews">{{nav.reviews_label}}</a>
+    </div>
+    <a class="btn" href="#book">{{copy.book_cta}}</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <p class="label">{{hero.eyebrow}}</p>
+      <h1>{{{hero.headline_html}}}</h1>
+      <p class="lede">{{hero.lede}}</p>
+      <div class="hero-actions">
+        <a class="btn" href="#book">{{copy.book_cta}}</a>
+        <a class="btn ghost" href="#services">{{hero.secondary_cta}}</a>
+      </div>
+    </div>
+    <div class="book-card">
+      <span class="badge">{{hero.card_badge}}</span>
+      <h3>{{hero.card_heading}}</h3>
+      <p>{{hero.card_body}}</p>
+      <a class="btn" href="tel:{{business.phone_href}}" style="width:100%; justify-content:center;">{{business.phone}}</a>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">{{services.eyebrow}}</p>
+      <h2>{{services.heading}}</h2>
+      <p>{{services.sub}}</p>
+    </div>
+    <div class="services-grid">
+      {{#services.items}}
+      <div class="svc-card">
+        <div class="svc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">{{{icon_svg}}}</svg></div>
+        <h3>{{name}}</h3>
+        <p>{{desc}}</p>
+      </div>
+      {{/services.items}}
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="trust-strip">
+      {{#trust.items}}
+      <div class="trust-item"><div class="num">{{num}}</div><div class="cap">{{cap}}</div></div>
+      {{/trust.items}}
+    </div>
+  </div>
+</section>
+
+<section id="process">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">{{process.eyebrow}}</p>
+      <h2>{{process.heading}}</h2>
+      <p>{{process.sub}}</p>
+    </div>
+    <div class="process">
+      {{#process.steps}}
+      <div class="step">
+        <div></div>
+        <div><h3>{{title}}</h3><p>{{desc}}</p></div>
+      </div>
+      {{/process.steps}}
+    </div>
+  </div>
+</section>
+
+<section id="team">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">{{team.eyebrow}}</p>
+      <h2>{{team.heading}}</h2>
+    </div>
+    <div class="team">
+      {{#team.members}}
+      <div class="provider">
+        <div class="avatar"></div>
+        <h3>{{name}}</h3>
+        <div class="role">{{role}}</div>
+        <p>{{bio}}</p>
+      </div>
+      {{/team.members}}
+    </div>
+  </div>
+</section>
+
+<section id="reviews">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">{{reviews.eyebrow}}</p>
+      <h2>{{reviews.heading}}</h2>
+    </div>
+    <div class="quotes">
+      {{#reviews.items}}
+      <div class="quote-card">
+        <div class="stars">{{stars}}</div>
+        <p>{{text}}</p>
+        <div class="who">{{author}}</div>
+      </div>
+      {{/reviews.items}}
+    </div>
+  </div>
+</section>
+
+<section id="book">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">{{visit.eyebrow}}</p>
+      <h2>{{visit.heading}}</h2>
+    </div>
+    <div class="visit">
+      <div>
+        {{#visit.rows}}
+        <div class="info-row"><span>{{label}}</span><span>{{value}}</span></div>
+        {{/visit.rows}}
+        <div style="margin-top:1.6rem;">
+          <a class="btn" href="tel:{{business.phone_href}}">{{visit.cta_label}}</a>
+        </div>
+      </div>
+      <div>
+        <p class="label">{{visit.insurance_label}}</p>
+        <div class="insurance-list">
+          {{#visit.insurance}}
+          <span class="insurance-chip">{{.}}</span>
+          {{/visit.insurance}}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-row">
+    <div class="brand"><div class="brand-mark"></div><div class="brand-name">{{business.name}}</div></div>
+    <div class="fine">{{footer.fine}}</div>
+  </div>
+</footer>

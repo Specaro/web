@@ -1,0 +1,102 @@
+{
+  "business": {
+    "name": "Meridian Chiropractic",
+    "phone": "(555) 028-4410",
+    "phone_href": "+15550284410",
+    "email": "hello@meridianchiro.example",
+    "address": "215 Birchwood Ave, Brookhaven"
+  },
+  "nav": {
+    "services_label": "Services",
+    "process_label": "Our Approach",
+    "team_label": "Providers",
+    "reviews_label": "Reviews"
+  },
+  "copy": {
+    "book_cta": "Book an appointment"
+  },
+  "hero": {
+    "eyebrow": "Chiropractic & Sports Rehab · Est. 2015",
+    "headline_html": "Move without <span class=\"soft\">thinking about it.</span>",
+    "lede": "Evidence-based chiropractic care for back pain, sports injuries, and everyday stiffness — most new patients get their first adjustment within 48 hours.",
+    "secondary_cta": "See our approach",
+    "card_badge": "New patients",
+    "card_heading": "Same-week availability",
+    "card_body": "Your first visit includes a full assessment and a plan you'll actually understand — no long-term contracts."
+  },
+  "services": {
+    "eyebrow": "How we treat",
+    "heading": "Care built around how you actually move",
+    "sub": "Every plan starts with a real exam, not a generic protocol.",
+    "items": [
+      { "name": "Spinal adjustments", "desc": "Manual and instrument-assisted adjustments for chronic and acute back or neck pain.", "icon_svg": "<ellipse cx=\"12\" cy=\"4\" rx=\"3\" ry=\"1.4\"/><ellipse cx=\"12\" cy=\"9\" rx=\"3\" ry=\"1.4\"/><ellipse cx=\"12\" cy=\"14\" rx=\"3\" ry=\"1.4\"/><ellipse cx=\"12\" cy=\"19\" rx=\"3\" ry=\"1.4\"/><path d=\"M12 5.4v3.2M12 10.4v3.2M12 15.4v3.2\"/>" },
+      { "name": "Sports injury rehab", "desc": "Recovery plans for runners, lifters, and weekend athletes, built with your season in mind.", "icon_svg": "<circle cx=\"13\" cy=\"4\" r=\"1.6\"/><path d=\"M10 21l2-6 3 2 2 5M9 12l3-2 2 3 4-1M11 10L8 8l-3 2\"/>" },
+      { "name": "Prenatal chiropractic", "desc": "Webster-technique certified care to ease pregnancy-related back and pelvic pain.", "icon_svg": "<path d=\"M12 20s-7-4.35-9-9.1C1.7 7.3 3.9 4 7.2 4c2 0 3.4 1.1 4.8 2.9C13.4 5.1 14.8 4 16.8 4c3.3 0 5.5 3.3 4.2 6.9C19 15.65 12 20 12 20z\"/>" },
+      { "name": "Therapeutic massage", "desc": "Licensed massage therapy paired with your adjustment plan to speed up recovery.", "icon_svg": "<path d=\"M8 13V6a1.5 1.5 0 013 0v6M11 12V4.5a1.5 1.5 0 013 0V12M14 12.5V6a1.5 1.5 0 013 0v8c0 4-3 7-7 7h-1c-3 0-4-1-5.5-3L2 14.5c-.6-1 .3-2.2 1.4-1.8L6 13.7\"/>" },
+      { "name": "Posture & ergonomics", "desc": "Desk-setup and movement assessments for chronic neck and shoulder tension.", "icon_svg": "<circle cx=\"12\" cy=\"5\" r=\"2\"/><path d=\"M12 7v6M8 20l4-7 4 7M9 12h6\"/>" },
+      { "name": "Pediatric chiropractic", "desc": "Gentle, low-force adjustments for kids, from infants to teens.", "icon_svg": "<circle cx=\"9\" cy=\"7\" r=\"2\"/><circle cx=\"16\" cy=\"9\" r=\"1.5\"/><path d=\"M4 20v-2a4 4 0 014-4h1a4 4 0 014 4M14 20v-1.5a3 3 0 013-3h0a3 3 0 013 3V20\"/>" }
+    ]
+  },
+  "trust": {
+    "items": [
+      { "num": "9", "cap": "Years serving Brookhaven" },
+      { "num": "4.9", "cap": "Average rating, 540+ reviews" },
+      { "num": "48hr", "cap": "Average time to first adjustment" },
+      { "num": "12", "cap": "Insurance plans accepted" }
+    ]
+  },
+  "process": {
+    "eyebrow": "New patients",
+    "heading": "What your first three weeks look like",
+    "sub": "Most patients notice a difference well before treatment ends.",
+    "steps": [
+      { "title": "Book & complete intake", "desc": "Fill out your history online before you arrive — your first visit is exam time, not paperwork time." },
+      { "title": "Full assessment", "desc": "Posture, movement, and a review of any imaging you bring, so treatment targets the actual cause." },
+      { "title": "First adjustment", "desc": "Most patients are treated the same visit as their assessment, not sent home to \"wait and see.\"" },
+      { "title": "A plan with an end date", "desc": "You'll get a written care plan with a target number of visits, reassessed every few weeks." }
+    ]
+  },
+  "team": {
+    "eyebrow": "Meet the team",
+    "heading": "Your providers",
+    "members": [
+      { "name": "Dr. Alicia Moreno, DC", "role": "Founder & Chiropractor", "bio": "14 years in practice, certified in sports rehabilitation and prenatal care." },
+      { "name": "Dr. Sam Whitfield, DC", "role": "Chiropractor", "bio": "Focuses on post-injury recovery and works closely with two local physical therapy clinics." },
+      { "name": "Priya Nandan, LMT", "role": "Licensed Massage Therapist", "bio": "Pairs therapeutic massage with adjustment plans for faster recovery." }
+    ]
+  },
+  "reviews": {
+    "eyebrow": "Patient stories",
+    "heading": "What patients say",
+    "items": [
+      { "stars": "★★★★★", "text": "\"I'd tried two other chiropractors before Meridian. This is the first place that actually explained what was going on with my back.\"", "author": "Grace L. — patient since 2022" },
+      { "stars": "★★★★★", "text": "\"Dr. Moreno got me back to running six weeks after a hip injury I thought would sideline me all season.\"", "author": "Marcus T. — marathon runner" },
+      { "stars": "★★★★★", "text": "\"Saw me the same day I called with sudden lower back pain. Didn't expect that from a chiropractic office.\"", "author": "Denise K. — first-time patient" }
+    ]
+  },
+  "visit": {
+    "eyebrow": "Visit us",
+    "heading": "Plan your first visit",
+    "rows": [
+      { "label": "Address", "value": "215 Birchwood Ave, Brookhaven" },
+      { "label": "Phone", "value": "(555) 028-4410" },
+      { "label": "Mon–Thu", "value": "8am–6pm" },
+      { "label": "Friday", "value": "8am–2pm" },
+      { "label": "Sat–Sun", "value": "Closed" }
+    ],
+    "cta_label": "Call to book",
+    "insurance_label": "Insurance accepted",
+    "insurance": ["Blue Cross Blue Shield", "Aetna", "Cigna", "UnitedHealthcare", "Medicare", "Kaiser Permanente"]
+  },
+  "footer": {
+    "fine": "© 2026 Meridian Chiropractic, Brookhaven. Demo site built by Specaro Web."
+  },
+  "theme": {
+    "accent": "#2f6f62",
+    "accentHot": "#3d8874",
+    "accentDark": "#4fa38d",
+    "accentHotDark": "#63b89f",
+    "secondary": "#c17a4f",
+    "secondaryDark": "#d99269"
+  }
+}
