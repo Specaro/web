@@ -165,6 +165,30 @@ td.notes { white-space: normal; color: var(--ink-2); min-width: 160px; }
 .pill { display: inline-flex; align-items: center; gap: 6px; }
 details summary { cursor: pointer; color: var(--ink-2); font-size: 12px; margin-top: 10px; }
 
+/* Workout plan */
+.plan-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+.plan-nav { display: flex; align-items: center; gap: 6px; }
+.plan-nav button { white-space: nowrap; }
+.plan-nav span { min-width: 110px; text-align: center; font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.plan-note { color: var(--ink-2); font-size: 13px; margin: 0 0 12px; }
+.week-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 1100px) { .week-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .week-grid { grid-template-columns: 1fr; } }
+.day { border: 1px solid var(--border); border-radius: 10px; padding: 10px; background: var(--page); display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.day.today { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.day.past { opacity: 0.75; }
+.day h3 { margin: 0; font-size: 12px; font-weight: 600; color: var(--ink-2); display: flex; justify-content: space-between; }
+.day h3 em { font-style: normal; color: var(--accent); }
+.sess { display: flex; flex-direction: column; gap: 4px; border-top: 1px solid var(--grid); padding-top: 8px; }
+.sess:first-of-type { border-top: 0; padding-top: 0; }
+.sess .t { display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; }
+.sess .m { color: var(--ink-2); font-size: 12px; font-variant-numeric: tabular-nums; }
+.sess p { margin: 0; font-size: 12px; color: var(--ink-2); line-height: 1.4; }
+.sess .done { color: var(--good-text); font-size: 12px; font-weight: 600; }
+.sess button { align-self: flex-start; font-size: 12px; padding: 4px 10px; }
+.rest { color: var(--muted); font-size: 12px; }
+.race-day { font-weight: 700; color: var(--accent); font-size: 14px; }
+
 /* Settings dialog */
 dialog {
   border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--ink);
@@ -240,6 +264,21 @@ dialog .actions { display: flex; justify-content: flex-end; gap: 8px; margin-top
       <p class="hint" id="phaseHint"></p>
       <div class="phases" id="phases"></div>
       <div class="phase-scale" id="phaseScale"></div>
+    </div>
+
+    <!-- Workouts -->
+    <div class="card span-12" id="planCard">
+      <div class="plan-head">
+        <h2>Your workouts</h2>
+        <div class="plan-nav">
+          <button type="button" id="wkPrev" aria-label="Previous week">‹</button>
+          <span id="wkLabel"></span>
+          <button type="button" id="wkNext" aria-label="Next week">›</button>
+          <button type="button" id="wkToday">This week</button>
+        </div>
+      </div>
+      <p class="plan-note" id="planNote"></p>
+      <div class="week-grid" id="weekGrid"></div>
     </div>
 
     <!-- Weekly volume -->
@@ -325,6 +364,14 @@ dialog .actions { display: flex; justify-content: flex-end; gap: 8px; margin-top
     <label>Race date<input type="date" name="raceDate" required></label>
     <label>Plan length (weeks)<input type="number" name="planWeeks" min="8" max="40" step="1" required></label>
     <label>Peak weekly hours<input type="number" name="peakHours" min="3" max="25" step="0.5" required></label>
+    <label>Focus
+      <select name="focus">
+        <option value="swim">Swim (extra swim time &amp; confidence work)</option>
+        <option value="balanced">Balanced</option>
+        <option value="bike">Bike</option>
+        <option value="run">Run</option>
+      </select>
+    </label>
     <label>Units
       <select name="units"><option value="metric">Metric (km, m)</option><option value="imperial">Imperial (mi, yd)</option></select>
     </label>
@@ -365,9 +412,10 @@ const fmtLong = d => d.toLocaleDateString(undefined, { weekday: 'short', month: 
 function defaultSettings() {
   return {
     raceName: 'IRONMAN 70.3',
-    raceDate: iso(addDays(today(), 7 * 14)),
-    planWeeks: 20,
-    peakHours: 11,
+    raceDate: '2027-06-13',
+    planWeeks: 37,
+    peakHours: 14,
+    focus: 'swim',
     units: 'metric',
   };
 }
@@ -377,7 +425,13 @@ function load() {
     const raw = localStorage.getItem(STORE_KEY);
     if (raw) {
       const s = JSON.parse(raw);
-      if (s && Array.isArray(s.workouts)) return { settings: { ...defaultSettings(), ...s.settings }, workouts: s.workouts, sample: !!s.sample };
+      if (s && Array.isArray(s.workouts)) {
+        // Settings saved by the first version that were never customized pick up the new defaults.
+        const old = s.settings || {};
+        const untouched = !old.focus && old.raceName === 'IRONMAN 70.3' && +old.planWeeks === 20 && +old.peakHours === 11;
+        const settings = untouched ? { ...defaultSettings(), units: old.units || 'metric' } : { ...defaultSettings(), ...old };
+        return { settings, workouts: s.workouts, sample: !!s.sample };
+      }
     }
   } catch (e) { /* storage unavailable */ }
   const settings = defaultSettings();
@@ -870,8 +924,214 @@ function renderLog() {
   more.hidden = rows.length <= logLimit;
 }
 
+// ---------- Workout plan ----------
+const FOCUS_MULT = {
+  swim: { swim: 1.15, bike: 1.05, run: 0.85, strength: 1 },
+  balanced: { swim: 1, bike: 1, run: 1, strength: 1 },
+  bike: { swim: 0.9, bike: 1.2, run: 0.95, strength: 1 },
+  run: { swim: 0.9, bike: 0.95, run: 1.25, strength: 1 },
+};
+// Mon..Sun: [sport, type, share of weekly hours]
+const TEMPLATE = [
+  [],
+  [['swim', 'technique', 0.09], ['run', 'easy', 0.07]],
+  [['bike', 'intervals', 0.13], ['strength', 'strength', 0.04]],
+  [['swim', 'endurance', 0.10], ['run', 'tempo', 0.08]],
+  [['swim', 'skills', 0.07]],
+  [['bike', 'long', 0.25], ['run', 'brick', 0.04]],
+  [['run', 'long', 0.13]],
+];
+const CAPS = { swim: 75, strength: 40, 'bike-long': 240, 'run-long': 140, 'run-brick': 30 };
+const SWIM_M_PER_MIN = 28; // realistic for a newer swimmer, including drills and rest
+const SWIM_CAP = { Base: 45, Build: 60, Peak: 75, Taper: 50 };
+
+const WORKOUTS = {
+  'swim-technique': {
+    Base: ['Swim · technique', 'Warm up 200 m easy. 8×50 drills (catch-up, side-kick, fingertip drag) with 20 s rest. Then 4×100 relaxed — focus on breathing out fully underwater. Cool down 100 m.', 4],
+    Build: ['Swim · technique', 'Warm up 300 m. 6×50 drills, then 6×100 steady with bilateral breathing, 15 s rest. Cool down.', 5],
+    Peak: ['Swim · race pace', 'Warm up 300 m. 4×50 drills, then 8×100 at race pace with 10 s rest. Cool down.', 6],
+  },
+  'swim-endurance': {
+    Base: ['Swim · build distance', 'Swim as far as you can non-stop at an easy pace, rest, repeat. Goal: add 50–100 m to your longest non-stop swim each week. Stopping is fine — just don’t panic, float and reset.', 5],
+    Build: ['Swim · endurance', '3–4 × 400–500 m steady with 30 s rest. Sight forward every 6–8 strokes, even in the pool.', 6],
+    Peak: ['Swim · race distance', 'Swim 1,900 m+ continuous at race effort. You’re proving to yourself you can do the whole thing.', 6],
+  },
+  'swim-skills': {
+    Base: ['Swim · water confidence', '10×25 relaxed. Practice treading water and floating 1–2 min, deep-end push-offs without touching the wall, breathing to both sides. Calm = fast.', 3],
+    Build: ['Swim · open-water skills', 'Sighting drills (head up every 6 strokes), swim close to others to practice drafting, deep-water starts. Wetsuit swim if you have one.', 4],
+    Peak: ['Open-water swim', 'Swim 1.5–2 km in open water with a buddy or group. Practice the start, sighting buoys, and swimming straight.', 5],
+  },
+  'bike-intervals': {
+    Base: ['Bike · cadence', 'Easy endurance ride with 5×1 min high cadence (100+ rpm), 2 min easy between.', 5],
+    Build: ['Bike · race effort', 'Warm up 15 min, then 3×12 min at race effort with 4 min easy. Cool down.', 7],
+    Peak: ['Bike · race effort', 'Warm up 15 min, then 2×20 min at race effort with 5 min easy. Cool down.', 7],
+  },
+  'bike-long': {
+    Base: ['Long ride', 'Steady, conversational pace. Practice eating and drinking every 20 min.', 5],
+    Build: ['Long ride', 'Last 45 min at race effort. Fuel like race day (60–90 g carbs per hour).', 6],
+    Peak: ['Race-rehearsal ride', 'Include 2 h at race effort. Race-day nutrition, kit and bike setup.', 6],
+  },
+  'run-easy': {
+    Base: ['Run · easy + strides', 'Easy run, then 6×20 s strides with full recovery.', 4],
+  },
+  'run-tempo': {
+    Base: ['Run · steady', '4×5 min comfortably hard with 2 min easy between.', 6],
+    Build: ['Run · race pace', '3×10 min at 70.3 race pace with 3 min easy between.', 7],
+    Peak: ['Run · race pace', '2×15 min at race pace with 3 min easy between.', 7],
+  },
+  'run-brick': {
+    Base: ['Brick run', 'Straight off the bike, easy. Just getting your legs used to the feeling.', 5],
+    Build: ['Brick run', 'Straight off the bike. Easy first 5 min, then settle into race-pace feel.', 6],
+  },
+  'run-long': {
+    Base: ['Long run', 'Easy, conversational pace. Running is your strength — build time on feet, don’t chase pace.', 5],
+    Peak: ['Long run', 'Easy, with the last 20 min at race pace. Practice race nutrition.', 6],
+  },
+  'strength-strength': {
+    Base: ['Strength', 'Planks, glute bridges, single-leg squats, band pull-aparts and face pulls. Keeps shoulders healthy for all that swimming.', 5],
+  },
+};
+function workoutText(key, phase) {
+  const w = WORKOUTS[key];
+  const ph = phase === 'Taper' ? 'Peak' : phase;
+  return w[ph] || w.Build || w.Base;
+}
+
+function planWeek(weekStart, settings = state.settings) {
+  const p = phases(settings);
+  const idx = Math.floor(daysBetween(p.start, weekStart) / 7);
+  if (idx < 0 || idx >= p.weeks) return null;
+  const phase = p.list.find(x => idx >= x.from && idx < x.from + x.weeks);
+  const hours = plannedHours(weekStart, settings);
+  const recovery = (phase.name === 'Base' || phase.name === 'Build') && (idx + 1) % 4 === 0;
+  const days = [];
+
+  if (idx === p.weeks - 1) {
+    // Race week
+    const raceDow = (p.race.getDay() + 6) % 7;
+    const rw = [
+      [],
+      [['swim', 25, 'Swim · openers', 'Easy swim with 4×50 at race pace. Stay relaxed.', 4]],
+      [['bike', 45, 'Bike · openers', 'Easy ride with 3×2 min at race effort.', 5]],
+      [['run', 25, 'Run · openers', 'Easy jog with 4 strides.', 4]],
+      [['swim', 20, 'Swim · easy', 'Easy swim. Check goggles and wetsuit.', 3]],
+      [['bike', 20, 'Shakeout', 'Short spin + 10 min jog. Rack your bike, check the course.', 3]],
+      [],
+    ];
+    for (let d = 0; d < 7; d++) {
+      const date = addDays(weekStart, d);
+      if (d === raceDow) days.push({ date, race: true, sessions: [] });
+      else if (d > raceDow) days.push({ date, sessions: [] });
+      else days.push({ date, sessions: rw[d].map(([sport, min, title, text, rpe]) => ({ sport, min, title, text, rpe })) });
+    }
+    return { idx, weeks: p.weeks, phase: phase.name, hours, recovery: false, raceWeek: true, days };
+  }
+
+  const mult = FOCUS_MULT[settings.focus] || FOCUS_MULT.balanced;
+  const brickOn = phase.name !== 'Base' || idx >= phase.weeks / 2;
+  const all = TEMPLATE.flat().filter(([s, t]) => brickOn || t !== 'brick');
+  const norm = all.reduce((a, [s, , sh]) => a + sh * mult[s], 0);
+  for (let d = 0; d < 7; d++) {
+    const date = addDays(weekStart, d);
+    const sessions = [];
+    for (const [sport, type, share] of TEMPLATE[d]) {
+      if (type === 'brick' && !brickOn) continue;
+      let min = (hours * 60 * share * mult[sport]) / norm;
+      const cap = sport === 'swim' ? SWIM_CAP[phase.name] : CAPS[`${sport}-${type}`] || CAPS[sport];
+      if (cap) min = Math.min(min, cap);
+      min = Math.max(sport === 'strength' || type === 'brick' ? 15 : 20, Math.round(min / 5) * 5);
+      let [title, text, rpe] = workoutText(`${sport}-${type}`, phase.name);
+      if (recovery && rpe > 4) { text = 'Recovery week: keep this one easy. ' + text.replace(/race effort|race pace|comfortably hard/g, 'easy effort'); rpe = 4; }
+      if (phase.name === 'Taper') { text = 'Taper: shorter, keep a little intensity. ' + text; }
+      sessions.push({ sport, min, title, text, rpe, swimKm: sport === 'swim' && type !== 'skills' ? Math.round(min * SWIM_M_PER_MIN / 100) / 10 : 0 });
+    }
+    days.push({ date, sessions });
+  }
+  return { idx, weeks: p.weeks, phase: phase.name, hours, recovery, raceWeek: false, days };
+}
+
+let planOffset = 0;
+function renderPlan() {
+  const p = phases();
+  const t = today();
+  let wk = addDays(mondayOf(t), planOffset * 7);
+  if (wk < p.start && planOffset === 0) wk = p.start;
+  const plan = planWeek(wk);
+  const grid = document.getElementById('weekGrid');
+  const note = document.getElementById('planNote');
+  grid.innerHTML = '';
+  document.getElementById('wkLabel').textContent = `Week of ${fmtShort(wk)}`;
+  document.getElementById('wkPrev').disabled = addDays(wk, -7) < p.start;
+  document.getElementById('wkNext').disabled = addDays(wk, 7) > p.race;
+  document.getElementById('wkToday').disabled = planOffset === 0;
+  if (!plan) { note.textContent = 'This week is outside your plan. Check the race date and plan length in Race settings.'; return; }
+
+  const counts = {};
+  let total = 0;
+  plan.days.forEach(d => d.sessions.forEach(s => { counts[s.sport] = (counts[s.sport] || 0) + 1; total += s.min; }));
+  let msg = `Week ${plan.idx + 1} of ${plan.weeks} · ${plan.phase}${plan.recovery ? ' (recovery week)' : ''} · ${hrs(total)} h · ` +
+    ['swim', 'bike', 'run', 'strength'].filter(s => counts[s]).map(s => `${LABEL[s]} ×${counts[s]}`).join(', ');
+  if (plan.raceWeek) msg = `Race week! Keep it short and sharp, sleep a lot, and trust the work.`;
+  else if (state.settings.focus === 'swim') {
+    const ph = phases().list;
+    const peak = ph.find(x => x.name === 'Peak'), build = ph.find(x => x.name === 'Build');
+    msg += ` — Swim goals: first open-water swim during Build (from ${fmtShort(build.start)}), 1,900 m non-stop by ${fmtShort(peak.start)}.`;
+  }
+  note.textContent = msg;
+
+  const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  plan.days.forEach((day, i) => {
+    const card = document.createElement('div');
+    const isToday = iso(day.date) === iso(t);
+    card.className = 'day' + (isToday ? ' today' : day.date < t ? ' past' : '');
+    const h = document.createElement('h3');
+    h.innerHTML = `<span>${DOW[i]} · ${fmtShort(day.date)}</span>${isToday ? '<em>Today</em>' : ''}`;
+    card.appendChild(h);
+    if (day.race) {
+      const r = document.createElement('div'); r.className = 'race-day';
+      r.textContent = `🏁 Race day: ${state.settings.raceName}`;
+      card.appendChild(r);
+    } else if (!day.sessions.length) {
+      const r = document.createElement('div'); r.className = 'rest';
+      r.textContent = plan.raceWeek && i > 0 ? 'Recover. You did it.' : 'Rest day. Sleep, eat well, stretch.';
+      card.appendChild(r);
+    }
+    for (const s of day.sessions) {
+      const el = document.createElement('div'); el.className = 'sess';
+      const title = document.createElement('div'); title.className = 't';
+      title.innerHTML = `<i class="sw" style="background:var(--${s.sport})"></i>`;
+      title.appendChild(document.createTextNode(s.title));
+      const meta = document.createElement('div'); meta.className = 'm';
+      meta.textContent = `${fmtHM(s.min)}${s.swimKm ? ' · ≈' + fmtDist('swim', s.swimKm) : ''} · RPE ${s.rpe}`;
+      const txt = document.createElement('p'); txt.textContent = s.text;
+      el.append(title, meta, txt);
+      const logged = state.workouts.some(w => w.date === iso(day.date) && w.sport === s.sport);
+      if (logged) {
+        const dn = document.createElement('div'); dn.className = 'done'; dn.textContent = '✓ Done';
+        el.appendChild(dn);
+      } else if (day.date <= t) {
+        const b = document.createElement('button'); b.type = 'button'; b.textContent = 'Log it';
+        b.onclick = () => prefillLog(day.date, s);
+        el.appendChild(b);
+      }
+      card.appendChild(el);
+    }
+    grid.appendChild(card);
+  });
+}
+function prefillLog(date, s) {
+  form.date.value = iso(date);
+  form.sport.value = s.sport;
+  form.min.value = s.min;
+  form.rpe.value = s.rpe;
+  form.dist.value = '';
+  form.notes.value = s.title;
+  form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  (s.sport === 'strength' ? form.min : form.dist).focus({ preventScroll: true });
+}
+
 function renderAll() {
-  renderHeader(); renderKPIs(); renderPhases(); renderVolume(); renderReadiness();
+  renderHeader(); renderKPIs(); renderPhases(); renderPlan(); renderVolume(); renderReadiness();
   renderLoad(); renderHeat(); renderSplit(); renderLog();
 }
 
@@ -897,6 +1157,9 @@ form.addEventListener('submit', e => {
   form.min.focus();
 });
 
+document.getElementById('wkPrev').onclick = () => { planOffset--; renderPlan(); };
+document.getElementById('wkNext').onclick = () => { planOffset++; renderPlan(); };
+document.getElementById('wkToday').onclick = () => { planOffset = 0; renderPlan(); };
 document.getElementById('btnMore').onclick = () => { logLimit += 30; renderLog(); };
 document.getElementById('btnClearSample').onclick = () => {
   if (!confirm('Remove all sample sessions?')) return;
@@ -906,7 +1169,7 @@ document.getElementById('btnClearSample').onclick = () => {
 const dlg = document.getElementById('settings');
 const sf = document.getElementById('settingsForm');
 document.getElementById('btnSettings').onclick = () => {
-  for (const k of ['raceName', 'raceDate', 'planWeeks', 'peakHours', 'units']) sf[k].value = state.settings[k];
+  for (const k of ['raceName', 'raceDate', 'planWeeks', 'peakHours', 'focus', 'units']) sf[k].value = state.settings[k];
   dlg.showModal();
 };
 dlg.addEventListener('close', () => {
@@ -916,6 +1179,7 @@ dlg.addEventListener('close', () => {
     raceDate: sf.raceDate.value || state.settings.raceDate,
     planWeeks: Math.max(8, Math.min(40, parseInt(sf.planWeeks.value, 10) || 20)),
     peakHours: Math.max(3, Math.min(25, parseFloat(sf.peakHours.value) || 11)),
+    focus: ['swim', 'balanced', 'bike', 'run'].includes(sf.focus.value) ? sf.focus.value : 'balanced',
     units: sf.units.value === 'imperial' ? 'imperial' : 'metric',
   };
   save(); renderAll();
