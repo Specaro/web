@@ -1,0 +1,969 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>70.3 Training Dashboard</title>
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #898781;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11,11,11,0.10);
+  --wash: rgba(11,11,11,0.04);
+  --good-text: #006300;
+  --critical: #d03b3b;
+  --swim: #2a78d6;
+  --bike: #eb6834;
+  --run: #1baf7a;
+  --strength: #eda100;
+  --seq-0: #f0efec;
+  --seq-1: #b7d3f6;
+  --seq-2: #6da7ec;
+  --seq-3: #2a78d6;
+  --seq-4: #184f95;
+  --accent: #2a78d6;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7;
+    --muted: #898781; --grid: #2c2c2a; --axis: #383835;
+    --border: rgba(255,255,255,0.10); --wash: rgba(255,255,255,0.05);
+    --good-text: #0ca30c; --critical: #e66767;
+    --swim: #3987e5; --bike: #d95926; --run: #199e70; --strength: #c98500;
+    --seq-0: #262624; --seq-1: #104281; --seq-2: #1c5cab; --seq-3: #3987e5; --seq-4: #86b6ef;
+    --accent: #3987e5;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7;
+  --muted: #898781; --grid: #2c2c2a; --axis: #383835;
+  --border: rgba(255,255,255,0.10); --wash: rgba(255,255,255,0.05);
+  --good-text: #0ca30c; --critical: #e66767;
+  --swim: #3987e5; --bike: #d95926; --run: #199e70; --strength: #c98500;
+  --seq-0: #262624; --seq-1: #104281; --seq-2: #1c5cab; --seq-3: #3987e5; --seq-4: #86b6ef;
+  --accent: #3987e5;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--page);
+  color: var(--ink);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.wrap { max-width: 1200px; margin: 0 auto; padding: 24px 16px 64px; }
+header.top {
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+  gap: 16px; margin-bottom: 20px;
+}
+header.top h1 { margin: 0; font-size: 22px; font-weight: 650; letter-spacing: -0.01em; }
+header.top .sub { color: var(--ink-2); margin-top: 2px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
+button, .btn {
+  font: inherit; color: var(--ink); background: var(--surface);
+  border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px; cursor: pointer;
+}
+button:hover, .btn:hover { background: var(--wash); }
+button.primary { background: var(--accent); color: #fff; border-color: transparent; }
+button.primary:hover { filter: brightness(1.08); }
+button.link { border: 0; background: none; padding: 2px 4px; color: var(--muted); }
+button.link:hover { color: var(--critical); background: none; }
+
+.grid { display: grid; gap: 16px; grid-template-columns: repeat(12, 1fr); }
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 16px; min-width: 0;
+}
+.card h2 { margin: 0 0 2px; font-size: 14px; font-weight: 600; }
+.card .hint { color: var(--muted); font-size: 12px; margin: 0 0 12px; }
+.span-3 { grid-column: span 3; } .span-4 { grid-column: span 4; }
+.span-5 { grid-column: span 5; } .span-6 { grid-column: span 6; }
+.span-7 { grid-column: span 7; } .span-8 { grid-column: span 8; }
+.span-12 { grid-column: span 12; }
+@media (max-width: 960px) {
+  .span-3 { grid-column: span 6; }
+  .span-4, .span-5, .span-6, .span-7, .span-8 { grid-column: span 12; }
+}
+@media (max-width: 560px) { .span-3 { grid-column: span 12; } }
+
+.stat .label { color: var(--ink-2); font-size: 12px; }
+.stat .value { font-size: 32px; font-weight: 650; letter-spacing: -0.02em; line-height: 1.15; margin-top: 4px; }
+.stat .value small { font-size: 14px; font-weight: 500; color: var(--ink-2); margin-left: 4px; }
+.stat .foot { color: var(--muted); font-size: 12px; margin-top: 6px; }
+.delta-up { color: var(--good-text); }
+.delta-down { color: var(--critical); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--ink-2); margin-bottom: 8px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.sw.line { height: 2px; border-radius: 1px; width: 14px; }
+.sw.dash { height: 0; width: 14px; border-top: 2px dashed var(--ink-2); border-radius: 0; }
+
+svg { display: block; overflow: visible; }
+svg text { fill: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.chart { position: relative; width: 100%; }
+
+/* Readiness meters */
+.meter { margin-bottom: 14px; }
+.meter:last-child { margin-bottom: 0; }
+.meter .row { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; }
+.meter .row .v { color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.meter .track { height: 8px; background: var(--seq-0); border-radius: 4px; margin-top: 6px; overflow: hidden; }
+.meter .fill { height: 100%; border-radius: 4px; }
+
+/* Phase timeline */
+.phases { display: flex; gap: 2px; height: 28px; margin: 8px 0 4px; position: relative; }
+.phases div {
+  border-radius: 4px; font-size: 11px; color: var(--ink-2); display: flex; align-items: center;
+  justify-content: center; white-space: nowrap; overflow: hidden; background: var(--seq-0);
+}
+.phases div.current { background: var(--accent); color: #fff; font-weight: 600; }
+.phase-now { position: absolute; top: -6px; bottom: -6px; width: 2px; background: var(--ink); border-radius: 1px; }
+.phase-scale { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; }
+
+/* Heatmap */
+.heat { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 1fr); gap: 3px; }
+.heat div { aspect-ratio: 1; border-radius: 3px; background: var(--seq-0); }
+.heat div.future { background: transparent; outline: 1px dashed var(--grid); outline-offset: -1px; }
+.heat-wrap { display: grid; grid-template-columns: auto 1fr; gap: 6px; align-items: stretch; }
+.heat-days { display: grid; grid-template-rows: repeat(7, 1fr); gap: 3px; font-size: 10px; color: var(--muted); }
+.heat-days span { display: flex; align-items: center; }
+.heat-legend { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--muted); margin-top: 10px; justify-content: flex-end; }
+.heat-legend i { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+
+/* Week split */
+.split-row { display: grid; grid-template-columns: 76px 1fr auto; gap: 10px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--grid); font-size: 13px; }
+.split-row:last-child { border-bottom: 0; }
+.split-row .name { display: flex; align-items: center; gap: 6px; }
+.split-row .nums { color: var(--ink-2); font-variant-numeric: tabular-nums; text-align: right; }
+.split-row .bar { height: 6px; border-radius: 3px; }
+
+/* Form + table */
+form.log { display: grid; gap: 10px; grid-template-columns: repeat(6, 1fr); align-items: end; }
+form.log label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--ink-2); min-width: 0; }
+form.log .wide { grid-column: span 5; }
+@media (max-width: 760px) { form.log { grid-template-columns: repeat(2, 1fr); } form.log .wide { grid-column: span 2; } }
+input, select {
+  font: inherit; color: var(--ink); background: var(--page); border: 1px solid var(--border);
+  border-radius: 8px; padding: 7px 9px; width: 100%; min-width: 0;
+}
+input:focus, select:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.table-wrap { overflow-x: auto; margin-top: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+th { color: var(--muted); font-weight: 500; font-size: 12px; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+td.notes { white-space: normal; color: var(--ink-2); min-width: 160px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; }
+details summary { cursor: pointer; color: var(--ink-2); font-size: 12px; margin-top: 10px; }
+
+/* Settings dialog */
+dialog {
+  border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--ink);
+  padding: 20px; width: min(420px, calc(100vw - 32px));
+}
+dialog::backdrop { background: rgba(0,0,0,0.4); }
+dialog h3 { margin: 0 0 14px; font-size: 16px; }
+dialog label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--ink-2); margin-bottom: 12px; }
+dialog .actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+.banner {
+  background: var(--wash); border: 1px dashed var(--axis); border-radius: 10px; padding: 10px 14px;
+  margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;
+  color: var(--ink-2); font-size: 13px;
+}
+
+#tip {
+  position: fixed; pointer-events: none; z-index: 10; background: var(--surface); color: var(--ink);
+  border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12); white-space: pre-line; opacity: 0; transition: opacity .08s;
+  max-width: 240px; font-variant-numeric: tabular-nums;
+}
+#tip.on { opacity: 1; }
+#tip b { font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1 id="raceTitle">IRONMAN 70.3</h1>
+      <div class="sub" id="raceSub"></div>
+    </div>
+    <div class="toolbar">
+      <button id="btnSettings" type="button">Race settings</button>
+      <button id="btnExport" type="button">Export</button>
+      <label class="btn" for="importFile">Import</label>
+      <input id="importFile" type="file" accept="application/json" hidden>
+      <button id="btnTheme" type="button" aria-label="Toggle color theme">Theme</button>
+    </div>
+  </header>
+
+  <div class="banner" id="sampleBanner" hidden>
+    <span>You're looking at sample training data. Log your own sessions below, or clear the sample to start fresh.</span>
+    <button type="button" id="btnClearSample">Clear sample data</button>
+  </div>
+
+  <div class="grid">
+    <!-- KPI row -->
+    <div class="card stat span-3">
+      <div class="label">Race day countdown</div>
+      <div class="value" id="kCountdown">–</div>
+      <div class="foot" id="kCountdownFoot"></div>
+    </div>
+    <div class="card stat span-3">
+      <div class="label">This week</div>
+      <div class="value" id="kWeek">–</div>
+      <div class="foot" id="kWeekFoot"></div>
+    </div>
+    <div class="card stat span-3">
+      <div class="label">Fitness (CTL)</div>
+      <div class="value" id="kFitness">–</div>
+      <div class="foot" id="kFitnessFoot"></div>
+    </div>
+    <div class="card stat span-3">
+      <div class="label">Form (CTL − ATL)</div>
+      <div class="value" id="kForm">–</div>
+      <div class="foot" id="kFormFoot"></div>
+    </div>
+
+    <!-- Phase timeline -->
+    <div class="card span-12">
+      <h2>Training plan</h2>
+      <p class="hint" id="phaseHint"></p>
+      <div class="phases" id="phases"></div>
+      <div class="phase-scale" id="phaseScale"></div>
+    </div>
+
+    <!-- Weekly volume -->
+    <div class="card span-8">
+      <h2>Weekly volume</h2>
+      <p class="hint">Hours per week by discipline, last 12 weeks. Dashed mark = planned hours for that week.</p>
+      <div class="legend" id="volLegend"></div>
+      <div class="chart" id="volChart"></div>
+      <details>
+        <summary>Show as table</summary>
+        <div class="table-wrap" id="volTable"></div>
+      </details>
+    </div>
+
+    <!-- Race readiness -->
+    <div class="card span-4">
+      <h2>Race-distance readiness</h2>
+      <p class="hint">Longest single session in the last 6 weeks vs. 70.3 race distance.</p>
+      <div id="readiness"></div>
+    </div>
+
+    <!-- Fitness chart -->
+    <div class="card span-7">
+      <h2>Fitness &amp; fatigue</h2>
+      <p class="hint">Training load from duration × effort (RPE). Fitness = 42-day avg, fatigue = 7-day avg. Last 90 days.</p>
+      <div class="legend">
+        <span><i class="sw line" style="background:var(--swim)"></i>Fitness (CTL)</span>
+        <span><i class="sw line" style="background:var(--bike)"></i>Fatigue (ATL)</span>
+      </div>
+      <div class="chart" id="loadChart"></div>
+    </div>
+
+    <!-- Consistency + this week split -->
+    <div class="card span-5">
+      <h2>Consistency</h2>
+      <p class="hint">Daily training time, last 16 weeks.</p>
+      <div class="heat-wrap">
+        <div class="heat-days"><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span><span>Sun</span></div>
+        <div class="heat" id="heat"></div>
+      </div>
+      <div class="heat-legend">Less
+        <i style="background:var(--seq-0)"></i><i style="background:var(--seq-1)"></i><i style="background:var(--seq-2)"></i><i style="background:var(--seq-3)"></i><i style="background:var(--seq-4)"></i>
+        More</div>
+      <h2 style="margin-top:18px">This week by discipline</h2>
+      <div id="split" style="margin-top:6px"></div>
+    </div>
+
+    <!-- Log -->
+    <div class="card span-12">
+      <h2>Log a session</h2>
+      <p class="hint">Brick? Log the bike and the run as two sessions on the same day.</p>
+      <form class="log" id="logForm" autocomplete="off">
+        <label>Date<input type="date" name="date" required></label>
+        <label>Discipline
+          <select name="sport">
+            <option value="swim">Swim</option>
+            <option value="bike">Bike</option>
+            <option value="run">Run</option>
+            <option value="strength">Strength</option>
+          </select>
+        </label>
+        <label>Duration (min)<input type="number" name="min" min="1" max="720" step="1" required></label>
+        <label><span id="distLabel">Distance (km)</span><input type="number" name="dist" min="0" step="0.01"></label>
+        <label>Effort (RPE 1–10)<input type="number" name="rpe" min="1" max="10" step="1" value="5" required></label>
+        <label>&nbsp;<button class="primary" type="submit">Add session</button></label>
+        <label class="wide">Notes<input type="text" name="notes" maxlength="200" placeholder="e.g. 4×10 min @ race power, felt strong"></label>
+      </form>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Date</th><th>Discipline</th><th class="num">Duration</th><th class="num">Distance</th><th class="num">Pace / speed</th><th class="num">RPE</th><th class="num">Load</th><th>Notes</th><th></th></tr></thead>
+          <tbody id="logBody"></tbody>
+        </table>
+      </div>
+      <div style="display:flex;justify-content:center;margin-top:10px"><button type="button" id="btnMore" hidden>Show more</button></div>
+    </div>
+  </div>
+</div>
+
+<dialog id="settings">
+  <form method="dialog" id="settingsForm">
+    <h3>Race settings</h3>
+    <label>Race name<input name="raceName" maxlength="60" required></label>
+    <label>Race date<input type="date" name="raceDate" required></label>
+    <label>Plan length (weeks)<input type="number" name="planWeeks" min="8" max="40" step="1" required></label>
+    <label>Peak weekly hours<input type="number" name="peakHours" min="3" max="25" step="0.5" required></label>
+    <label>Units
+      <select name="units"><option value="metric">Metric (km, m)</option><option value="imperial">Imperial (mi, yd)</option></select>
+    </label>
+    <div class="actions">
+      <button value="cancel" type="submit" formnovalidate>Cancel</button>
+      <button value="save" class="primary" type="submit">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="tip" role="tooltip"></div>
+
+<script>
+(() => {
+'use strict';
+
+// ---------- Constants ----------
+const STORE_KEY = 'ironman703-dashboard-v1';
+const SPORTS = ['swim', 'bike', 'run', 'strength'];
+const LABEL = { swim: 'Swim', bike: 'Bike', run: 'Run', strength: 'Strength' };
+const RACE_KM = { swim: 1.9, bike: 90, run: 21.1 };
+const KM_PER_MI = 1.609344;
+const M_PER_YD = 0.9144;
+const DAY = 86400000;
+
+// ---------- Date helpers (local, YYYY-MM-DD) ----------
+const pad = n => String(n).padStart(2, '0');
+const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parse = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+const today = () => { const t = new Date(); return new Date(t.getFullYear(), t.getMonth(), t.getDate()); };
+const mondayOf = d => addDays(d, -((d.getDay() + 6) % 7));
+const daysBetween = (a, b) => Math.round((b - a) / DAY);
+const fmtShort = d => d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+const fmtLong = d => d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+
+// ---------- State ----------
+function defaultSettings() {
+  return {
+    raceName: 'IRONMAN 70.3',
+    raceDate: iso(addDays(today(), 7 * 14)),
+    planWeeks: 20,
+    peakHours: 11,
+    units: 'metric',
+  };
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) {
+      const s = JSON.parse(raw);
+      if (s && Array.isArray(s.workouts)) return { settings: { ...defaultSettings(), ...s.settings }, workouts: s.workouts, sample: !!s.sample };
+    }
+  } catch (e) { /* storage unavailable */ }
+  const settings = defaultSettings();
+  return { settings, workouts: makeSample(settings), sample: true };
+}
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+}
+
+// Deterministic sample data following a typical 70.3 week.
+function makeSample(settings) {
+  let seed = 7;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const out = [];
+  const end = today();
+  const start = addDays(mondayOf(end), -7 * 13);
+  // [sport, minutes, rpe, pace-ish: km per minute]
+  const week = {
+    1: [['strength', 40, 5, 0], ['swim', 45, 5, 1 / 24]],
+    2: [['bike', 60, 6, 0.48], ['run', 40, 6, 1 / 5.4]],
+    3: [['swim', 50, 6, 1 / 23], ['run', 45, 5, 1 / 5.8]],
+    4: [['bike', 75, 7, 0.5], ['strength', 30, 4, 0]],
+    5: [['swim', 55, 5, 1 / 23.5]],
+    6: [['bike', 150, 6, 0.46], ['run', 20, 7, 1 / 5.2]],
+    0: [['run', 80, 5, 1 / 6]],
+  };
+  const TEMPLATE_MIN = Object.values(week).flat().reduce((a, x) => a + x[1], 0);
+  for (let d = new Date(start); d <= end; d = addDays(d, 1)) {
+    const wk = Math.floor(daysBetween(start, d) / 7);
+    const ws = mondayOf(d);
+    const target = (plannedHours(ws, settings) ?? settings.peakHours * 0.5) * 60 * (0.88 + ((wk * 37) % 17) / 100);
+    const scale = target / TEMPLATE_MIN;
+    for (const [sport, min, rpe, kpm] of week[d.getDay()]) {
+      if (rnd() < 0.1) continue; // missed session
+      const m = Math.round(min * scale * (0.9 + rnd() * 0.2));
+      const dist = kpm ? +(m * kpm * (0.95 + rnd() * 0.1)).toFixed(sport === 'swim' ? 2 : 1) : 0;
+      out.push({ id: uid(), date: iso(d), sport, min: m, dist, rpe: Math.max(1, Math.min(10, rpe + Math.round(rnd() * 2 - 1))), notes: '' });
+    }
+  }
+  return out;
+}
+function uid() { return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4); }
+
+let state = load();
+
+// ---------- Units ----------
+const imperial = () => state.settings.units === 'imperial';
+function fmtDist(sport, km) {
+  if (!km) return '–';
+  if (sport === 'swim') return imperial() ? `${Math.round(km * 1000 / M_PER_YD).toLocaleString()} yd` : `${Math.round(km * 1000).toLocaleString()} m`;
+  return imperial() ? `${(km / KM_PER_MI).toFixed(1)} mi` : `${km.toFixed(1)} km`;
+}
+function fmtPace(w) {
+  if (!w.dist || !w.min) return '–';
+  if (w.sport === 'swim') {
+    const per100 = imperial() ? w.min / (w.dist * 1000 / M_PER_YD / 100) : w.min / (w.dist * 10);
+    return `${mmss(per100)} /100${imperial() ? 'yd' : 'm'}`;
+  }
+  if (w.sport === 'bike') {
+    const kmh = w.dist / (w.min / 60);
+    return imperial() ? `${(kmh / KM_PER_MI).toFixed(1)} mph` : `${kmh.toFixed(1)} km/h`;
+  }
+  if (w.sport === 'run') {
+    const per = imperial() ? w.min / (w.dist / KM_PER_MI) : w.min / w.dist;
+    return `${mmss(per)} /${imperial() ? 'mi' : 'km'}`;
+  }
+  return '–';
+}
+function mmss(min) { const s = Math.round(min * 60); return `${Math.floor(s / 60)}:${pad(s % 60)}`; }
+function fmtHM(min) { const h = Math.floor(min / 60), m = Math.round(min % 60); return h ? `${h}h ${pad(m)}m` : `${m}m`; }
+const hrs = min => (min / 60).toFixed(1);
+
+// Training load (hrTSS-style): hours × IF² × 100 with IF ≈ RPE-derived intensity.
+function load1(w) { const IF = 0.4 + w.rpe * 0.05; return (w.min / 60) * IF * IF * 100; }
+
+// ---------- Plan phases ----------
+function phases(settings = state.settings) {
+  const race = parse(settings.raceDate);
+  const n = Math.max(8, Math.min(40, +settings.planWeeks || 20));
+  const start = addDays(mondayOf(race), -7 * (n - 1));
+  const taper = 2, peak = 2;
+  const build = Math.round((n - taper - peak) * 0.45);
+  const base = n - taper - peak - build;
+  const list = [];
+  let w = 0;
+  for (const [name, len] of [['Base', base], ['Build', build], ['Peak', peak], ['Taper', taper]]) {
+    list.push({ name, start: addDays(start, w * 7), weeks: len, from: w });
+    w += len;
+  }
+  return { start, race, weeks: n, list };
+}
+function plannedHours(weekStart, settings = state.settings) {
+  const p = phases(settings);
+  const idx = Math.floor(daysBetween(p.start, weekStart) / 7);
+  if (idx < 0 || idx >= p.weeks) return null;
+  const peakH = +settings.peakHours || 11;
+  const ph = p.list.find(x => idx >= x.from && idx < x.from + x.weeks);
+  const within = idx - ph.from;
+  let f;
+  if (ph.name === 'Base') f = 0.55 + 0.25 * (within / Math.max(1, ph.weeks - 1));
+  else if (ph.name === 'Build') f = 0.8 + 0.15 * (within / Math.max(1, ph.weeks - 1));
+  else if (ph.name === 'Peak') f = 1;
+  else f = within === 0 ? 0.65 : 0.4;
+  if ((ph.name === 'Base' || ph.name === 'Build') && (idx + 1) % 4 === 0) f *= 0.7; // recovery week
+  return +(peakH * f).toFixed(1);
+}
+
+// ---------- Aggregations ----------
+function byDay() {
+  const m = new Map();
+  for (const w of state.workouts) {
+    const e = m.get(w.date) || { min: 0, load: 0, sports: {} };
+    e.min += w.min; e.load += load1(w);
+    e.sports[w.sport] = (e.sports[w.sport] || 0) + w.min;
+    m.set(w.date, e);
+  }
+  return m;
+}
+function weekTotals(weekStart) {
+  const end = addDays(weekStart, 7);
+  const t = { swim: { min: 0, km: 0, n: 0 }, bike: { min: 0, km: 0, n: 0 }, run: { min: 0, km: 0, n: 0 }, strength: { min: 0, km: 0, n: 0 } };
+  for (const w of state.workouts) {
+    const d = parse(w.date);
+    if (d >= weekStart && d < end) { t[w.sport].min += w.min; t[w.sport].km += w.dist || 0; t[w.sport].n++; }
+  }
+  t.total = SPORTS.reduce((a, s) => a + t[s].min, 0);
+  return t;
+}
+function loadSeries(days) {
+  const m = byDay();
+  const dates = state.workouts.map(w => w.date).sort();
+  const end = today();
+  const first = dates.length ? parse(dates[0]) : addDays(end, -days);
+  const warmStart = first < addDays(end, -days) ? first : addDays(end, -days);
+  let ctl = 0, atl = 0;
+  const out = [];
+  for (let d = new Date(warmStart); d <= end; d = addDays(d, 1)) {
+    const l = (m.get(iso(d)) || {}).load || 0;
+    ctl += (l - ctl) / 42;
+    atl += (l - atl) / 7;
+    if (d > addDays(end, -days)) out.push({ date: new Date(d), ctl, atl, load: l });
+  }
+  return out;
+}
+
+// ---------- Tooltip ----------
+const tip = document.getElementById('tip');
+function showTip(e, lines) {
+  tip.textContent = '';
+  lines.forEach((l, i) => {
+    if (i) tip.appendChild(document.createTextNode('\n'));
+    if (i === 0) { const b = document.createElement('b'); b.textContent = l; tip.appendChild(b); }
+    else tip.appendChild(document.createTextNode(l));
+  });
+  tip.classList.add('on');
+  const r = tip.getBoundingClientRect();
+  let x = e.clientX + 14, y = e.clientY + 14;
+  if (x + r.width > innerWidth - 8) x = e.clientX - r.width - 14;
+  if (y + r.height > innerHeight - 8) y = e.clientY - r.height - 14;
+  tip.style.left = Math.max(8, x) + 'px';
+  tip.style.top = Math.max(8, y) + 'px';
+}
+const hideTip = () => tip.classList.remove('on');
+function bindTip(el, fn) {
+  el.addEventListener('pointermove', e => showTip(e, fn(e)));
+  el.addEventListener('pointerleave', hideTip);
+}
+
+// ---------- SVG helpers ----------
+const NS = 'http://www.w3.org/2000/svg';
+function svgEl(tag, attrs, parent) {
+  const el = document.createElementNS(NS, tag);
+  for (const k in attrs) el.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(el);
+  return el;
+}
+function niceMax(v) {
+  if (v <= 0) return 1;
+  const p = Math.pow(10, Math.floor(Math.log10(v)));
+  for (const m of [1, 2, 2.5, 5, 10]) if (m * p >= v) return m * p;
+  return 10 * p;
+}
+const tickCount = max => [5, 4].find(n => Number.isInteger(max / n)) || 4;
+function topRounded(x, y, w, h, r) {
+  r = Math.min(r, h, w / 2);
+  return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`;
+}
+
+// ---------- Renderers ----------
+function renderHeader() {
+  const s = state.settings;
+  const race = parse(s.raceDate);
+  document.getElementById('raceTitle').textContent = s.raceName;
+  document.getElementById('raceSub').textContent = `${fmtLong(race)} · 1.9 km swim · 90 km bike · 21.1 km run`;
+  if (imperial()) document.getElementById('raceSub').textContent = `${fmtLong(race)} · 1.2 mi swim · 56 mi bike · 13.1 mi run`;
+  document.getElementById('distLabel').textContent = `Distance (${imperial() ? 'mi' : 'km'}; swim in ${imperial() ? 'yd' : 'm'})`;
+  document.getElementById('sampleBanner').hidden = !state.sample;
+}
+
+function renderKPIs() {
+  const race = parse(state.settings.raceDate);
+  const t = today();
+  const d = daysBetween(t, race);
+  const cd = document.getElementById('kCountdown');
+  if (d > 0) {
+    cd.innerHTML = `${d}<small>days</small>`;
+    document.getElementById('kCountdownFoot').textContent = `${Math.floor(d / 7)} weeks ${d % 7} days to go`;
+  } else if (d === 0) {
+    cd.textContent = 'Race day';
+    document.getElementById('kCountdownFoot').textContent = 'Go get it.';
+  } else {
+    cd.innerHTML = `${-d}<small>days ago</small>`;
+    document.getElementById('kCountdownFoot').textContent = 'Set your next race in Race settings';
+  }
+
+  const wk = mondayOf(t);
+  const cur = weekTotals(wk), prev = weekTotals(addDays(wk, -7));
+  const plan = plannedHours(wk);
+  document.getElementById('kWeek').innerHTML = `${hrs(cur.total)}<small>${plan != null ? `/ ${plan} h` : 'h'}</small>`;
+  const diff = (cur.total - prev.total) / 60;
+  const sessions = SPORTS.reduce((a, s) => a + cur[s].n, 0);
+  document.getElementById('kWeekFoot').innerHTML =
+    `${sessions} session${sessions === 1 ? '' : 's'} · <span class="${diff >= 0 ? 'delta-up' : 'delta-down'}">${diff >= 0 ? '▲' : '▼'} ${Math.abs(diff).toFixed(1)} h</span> vs last week`;
+
+  const ls = loadSeries(90);
+  const last = ls[ls.length - 1] || { ctl: 0, atl: 0 };
+  const wkAgo = ls[ls.length - 8] || last;
+  const dctl = last.ctl - wkAgo.ctl;
+  document.getElementById('kFitness').textContent = Math.round(last.ctl);
+  document.getElementById('kFitnessFoot').innerHTML =
+    `<span class="${dctl >= 0 ? 'delta-up' : 'delta-down'}">${dctl >= 0 ? '▲' : '▼'} ${Math.abs(dctl).toFixed(1)}</span> over 7 days`;
+  const form = last.ctl - last.atl;
+  document.getElementById('kForm').textContent = (form > 0 ? '+' : '') + Math.round(form);
+  let fl;
+  if (form > 15) fl = 'Very fresh — race ready or detraining';
+  else if (form > 5) fl = 'Fresh — good for a key session';
+  else if (form > -10) fl = 'Neutral — productive training';
+  else if (form > -30) fl = 'Tired — optimal overload zone';
+  else fl = 'Very fatigued — consider recovery';
+  document.getElementById('kFormFoot').textContent = fl;
+}
+
+function renderPhases() {
+  const p = phases();
+  const t = today();
+  const box = document.getElementById('phases');
+  box.innerHTML = '';
+  const nowIdx = daysBetween(p.start, t) / 7;
+  for (const ph of p.list) {
+    const div = document.createElement('div');
+    div.style.flex = ph.weeks;
+    div.textContent = `${ph.name} · ${ph.weeks}w`;
+    if (nowIdx >= ph.from && nowIdx < ph.from + ph.weeks) div.className = 'current';
+    bindTip(div, () => [ph.name, `${fmtShort(ph.start)} – ${fmtShort(addDays(ph.start, ph.weeks * 7 - 1))}`, `${ph.weeks} weeks`]);
+    box.appendChild(div);
+  }
+  const frac = daysBetween(p.start, t) / (p.weeks * 7);
+  if (frac >= 0 && frac <= 1) {
+    const m = document.createElement('span');
+    m.className = 'phase-now';
+    m.style.left = `calc(${(frac * 100).toFixed(2)}% - 1px)`;
+    m.title = 'Today';
+    box.appendChild(m);
+  }
+  document.getElementById('phaseScale').innerHTML = '';
+  const sc = document.getElementById('phaseScale');
+  [[p.start, 'Plan start'], [p.race, 'Race']].forEach(([d, l]) => {
+    const s = document.createElement('span'); s.textContent = `${l} · ${fmtShort(d)}`; sc.appendChild(s);
+  });
+  const hint = document.getElementById('phaseHint');
+  if (nowIdx < 0) hint.textContent = `Plan starts in ${Math.ceil(-nowIdx)} week(s). Peak target ${state.settings.peakHours} h/week.`;
+  else if (nowIdx >= p.weeks) hint.textContent = 'Plan complete.';
+  else {
+    const ph = p.list.find(x => nowIdx >= x.from && nowIdx < x.from + x.weeks);
+    hint.textContent = `Week ${Math.floor(nowIdx) + 1} of ${p.weeks} · ${ph.name} phase · ${plannedHours(mondayOf(t))} h planned this week`;
+  }
+}
+
+function renderVolume() {
+  const host = document.getElementById('volChart');
+  host.innerHTML = '';
+  const legend = document.getElementById('volLegend');
+  legend.innerHTML = SPORTS.map(s => `<span><i class="sw" style="background:var(--${s})"></i>${LABEL[s]}</span>`).join('') +
+    `<span><i class="sw dash"></i>Planned</span>`;
+
+  const W = host.clientWidth || 600, H = 240;
+  const m = { t: 8, r: 16, b: 26, l: 32 };
+  const wk0 = addDays(mondayOf(today()), -7 * 11);
+  const weeks = [];
+  for (let i = 0; i < 12; i++) {
+    const ws = addDays(wk0, i * 7);
+    weeks.push({ ws, t: weekTotals(ws), plan: plannedHours(ws) });
+  }
+  const maxH = niceMax(Math.max(1, ...weeks.map(w => Math.max(w.t.total / 60, w.plan || 0))));
+  const svg = svgEl('svg', { width: W, height: H, role: 'img', 'aria-label': 'Weekly training hours by discipline' }, host);
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const y = v => m.t + ih - (v / maxH) * ih;
+  const ticks = tickCount(maxH);
+  for (let i = 0; i <= ticks; i++) {
+    const v = (maxH / ticks) * i;
+    svgEl('line', { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), stroke: i ? 'var(--grid)' : 'var(--axis)', 'stroke-width': 1 }, svg);
+    const tx = svgEl('text', { x: m.l - 6, y: y(v) + 4, 'text-anchor': 'end' }, svg);
+    tx.textContent = v % 1 ? v.toFixed(1) : v;
+  }
+  const band = iw / weeks.length;
+  const bw = Math.min(36, band * 0.6);
+  const curWk = iso(mondayOf(today()));
+  weeks.forEach((w, i) => {
+    const cx = m.l + band * i + band / 2;
+    const x = cx - bw / 2;
+    let acc = 0;
+    const segs = SPORTS.filter(s => w.t[s].min > 0);
+    segs.forEach((s, j) => {
+      const h = w.t[s].min / 60;
+      const y0 = y(acc), y1 = y(acc + h);
+      const gap = j > 0 ? 2 : 0;
+      const hh = Math.max(0, y0 - y1 - gap);
+      if (j === segs.length - 1) svgEl('path', { d: topRounded(x, y1, bw, hh, 4), fill: `var(--${s})` }, svg);
+      else svgEl('rect', { x, y: y1, width: bw, height: hh, fill: `var(--${s})` }, svg);
+      acc += h;
+    });
+    if (w.plan != null) {
+      svgEl('line', { x1: x - 4, x2: x + bw + 4, y1: y(w.plan), y2: y(w.plan), stroke: 'var(--ink-2)', 'stroke-width': 2, 'stroke-dasharray': '4 3' }, svg);
+    }
+    const lbl = svgEl('text', { x: cx, y: H - 8, 'text-anchor': 'middle' }, svg);
+    lbl.textContent = iso(w.ws) === curWk ? 'This wk' : fmtShort(w.ws);
+    if (band < 44 && (weeks.length - 1 - i) % 2) lbl.textContent = '';
+    const hit = svgEl('rect', { x: m.l + band * i, y: m.t, width: band, height: ih, fill: 'transparent' }, svg);
+    bindTip(hit, () => [
+      `Week of ${fmtShort(w.ws)}`,
+      ...SPORTS.filter(s => w.t[s].min).map(s => `${LABEL[s]}: ${fmtHM(w.t[s].min)}`),
+      `Total: ${hrs(w.t.total)} h` + (w.plan != null ? ` (plan ${w.plan} h)` : ''),
+    ]);
+  });
+
+  // Table view
+  let html = '<table><thead><tr><th>Week of</th>' + SPORTS.map(s => `<th class="num">${LABEL[s]} (h)</th>`).join('') + '<th class="num">Total (h)</th><th class="num">Planned (h)</th></tr></thead><tbody>';
+  for (const w of weeks.slice().reverse()) {
+    html += `<tr><td>${fmtShort(w.ws)}</td>` + SPORTS.map(s => `<td class="num">${hrs(w.t[s].min)}</td>`).join('') +
+      `<td class="num">${hrs(w.t.total)}</td><td class="num">${w.plan ?? '–'}</td></tr>`;
+  }
+  document.getElementById('volTable').innerHTML = html + '</tbody></table>';
+}
+
+function renderReadiness() {
+  const cutoff = addDays(today(), -42);
+  const box = document.getElementById('readiness');
+  box.innerHTML = '';
+  for (const s of ['swim', 'bike', 'run']) {
+    let best = null;
+    for (const w of state.workouts) if (w.sport === s && parse(w.date) >= cutoff && (!best || (w.dist || 0) > (best.dist || 0))) best = w;
+    const km = best ? best.dist || 0 : 0;
+    const pct = Math.min(1, km / RACE_KM[s]);
+    const div = document.createElement('div');
+    div.className = 'meter';
+    div.innerHTML = `<div class="row"><span class="pill"><i class="sw" style="background:var(--${s})"></i>${LABEL[s]}</span>
+      <span class="v">${fmtDist(s, km)} / ${fmtDist(s, RACE_KM[s])} · ${Math.round((km / RACE_KM[s]) * 100)}%</span></div>
+      <div class="track"><div class="fill" style="width:${(pct * 100).toFixed(1)}%;background:var(--${s})"></div></div>`;
+    if (best) bindTip(div, () => [`Longest ${LABEL[s].toLowerCase()}`, fmtLong(parse(best.date)), `${fmtDist(s, km)} in ${fmtHM(best.min)}`, fmtPace(best)]);
+    box.appendChild(div);
+  }
+  const note = document.createElement('p');
+  note.className = 'hint';
+  note.style.margin = '14px 0 0';
+  note.textContent = 'Most 70.3 plans top out near 100% swim, 90–110% bike, and 75–90% run distance before taper.';
+  box.appendChild(note);
+}
+
+function renderLoad() {
+  const host = document.getElementById('loadChart');
+  host.innerHTML = '';
+  const data = loadSeries(90);
+  const W = host.clientWidth || 600, H = 300;
+  const m = { t: 8, r: 12, b: 26, l: 32 };
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const maxV = niceMax(Math.max(10, ...data.map(d => Math.max(d.ctl, d.atl))));
+  const x = i => m.l + (i / Math.max(1, data.length - 1)) * iw;
+  const y = v => m.t + ih - (v / maxV) * ih;
+  const svg = svgEl('svg', { width: W, height: H, role: 'img', 'aria-label': 'Fitness and fatigue over the last 90 days' }, host);
+  const lt = tickCount(maxV);
+  for (let i = 0; i <= lt; i++) {
+    const v = (maxV / lt) * i;
+    svgEl('line', { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), stroke: i ? 'var(--grid)' : 'var(--axis)' }, svg);
+    svgEl('text', { x: m.l - 6, y: y(v) + 4, 'text-anchor': 'end' }, svg).textContent = Math.round(v);
+  }
+  const step = Math.max(1, Math.ceil(data.length / Math.max(2, Math.floor(iw / 80))));
+  data.forEach((d, i) => {
+    if (i % step === 0) svgEl('text', { x: x(i), y: H - 8, 'text-anchor': 'middle' }, svg).textContent = fmtShort(d.date);
+  });
+  for (const [key, color] of [['atl', 'var(--bike)'], ['ctl', 'var(--swim)']]) {
+    const dStr = data.map((d, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(d[key]).toFixed(1)}`).join('');
+    svgEl('path', { d: dStr, fill: 'none', stroke: color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
+  }
+  // end-point direct labels
+  const last = data[data.length - 1];
+  if (last) {
+    for (const [key, color] of [['ctl', 'var(--swim)'], ['atl', 'var(--bike)']]) {
+      svgEl('circle', { cx: x(data.length - 1), cy: y(last[key]), r: 4, fill: color, stroke: 'var(--surface)', 'stroke-width': 2 }, svg);
+    }
+  }
+  const cross = svgEl('line', { y1: m.t, y2: m.t + ih, stroke: 'var(--axis)', 'stroke-width': 1, visibility: 'hidden' }, svg);
+  const dots = ['ctl', 'atl'].map(k => svgEl('circle', { r: 4, fill: k === 'ctl' ? 'var(--swim)' : 'var(--bike)', stroke: 'var(--surface)', 'stroke-width': 2, visibility: 'hidden' }, svg));
+  const hit = svgEl('rect', { x: m.l, y: m.t, width: iw, height: ih, fill: 'transparent' }, svg);
+  hit.addEventListener('pointermove', e => {
+    const r = svg.getBoundingClientRect();
+    const i = Math.max(0, Math.min(data.length - 1, Math.round(((e.clientX - r.left - m.l) / iw) * (data.length - 1))));
+    const d = data[i];
+    cross.setAttribute('x1', x(i)); cross.setAttribute('x2', x(i)); cross.setAttribute('visibility', 'visible');
+    dots[0].setAttribute('cx', x(i)); dots[0].setAttribute('cy', y(d.ctl)); dots[0].setAttribute('visibility', 'visible');
+    dots[1].setAttribute('cx', x(i)); dots[1].setAttribute('cy', y(d.atl)); dots[1].setAttribute('visibility', 'visible');
+    showTip(e, [fmtLong(d.date), `Fitness: ${d.ctl.toFixed(1)}`, `Fatigue: ${d.atl.toFixed(1)}`, `Form: ${(d.ctl - d.atl).toFixed(1)}`, `Day load: ${Math.round(d.load)}`]);
+  });
+  hit.addEventListener('pointerleave', () => {
+    hideTip();
+    [cross, ...dots].forEach(el => el.setAttribute('visibility', 'hidden'));
+  });
+}
+
+function renderHeat() {
+  const box = document.getElementById('heat');
+  box.innerHTML = '';
+  const m = byDay();
+  const t = today();
+  const start = addDays(mondayOf(t), -7 * 15);
+  for (let i = 0; i < 16 * 7; i++) {
+    const d = addDays(start, i);
+    const cell = document.createElement('div');
+    if (d > t) { cell.className = 'future'; box.appendChild(cell); continue; }
+    const e = m.get(iso(d));
+    const min = e ? e.min : 0;
+    const lvl = min === 0 ? 0 : min < 45 ? 1 : min < 90 ? 2 : min < 150 ? 3 : 4;
+    cell.style.background = `var(--seq-${lvl})`;
+    bindTip(cell, () => [fmtLong(d), min ? `Total: ${fmtHM(min)}` : 'Rest day',
+      ...(e ? SPORTS.filter(s => e.sports[s]).map(s => `${LABEL[s]}: ${fmtHM(e.sports[s])}`) : [])]);
+    box.appendChild(cell);
+  }
+}
+
+function renderSplit() {
+  const t = weekTotals(mondayOf(today()));
+  const box = document.getElementById('split');
+  const max = Math.max(1, ...SPORTS.map(s => t[s].min));
+  box.innerHTML = '';
+  for (const s of SPORTS) {
+    const row = document.createElement('div');
+    row.className = 'split-row';
+    const pct = t.total ? Math.round((t[s].min / t.total) * 100) : 0;
+    row.innerHTML = `<span class="name"><i class="sw" style="background:var(--${s})"></i>${LABEL[s]}</span>
+      <div><div class="bar" style="width:${(t[s].min / max) * 100}%;background:var(--${s})"></div></div>
+      <span class="nums">${fmtHM(t[s].min)}${s !== 'strength' && t[s].km ? ' · ' + fmtDist(s, t[s].km) : ''} · ${pct}%</span>`;
+    box.appendChild(row);
+  }
+}
+
+let logLimit = 15;
+function renderLog() {
+  const body = document.getElementById('logBody');
+  const rows = state.workouts.slice().sort((a, b) => b.date.localeCompare(a.date) || b.min - a.min);
+  body.innerHTML = '';
+  if (!rows.length) {
+    body.innerHTML = '<tr><td colspan="9" style="color:var(--muted);text-align:center;padding:20px">No sessions yet — log your first one above.</td></tr>';
+  }
+  for (const w of rows.slice(0, logLimit)) {
+    const tr = document.createElement('tr');
+    const cells = [
+      fmtShort(parse(w.date)),
+      null,
+      fmtHM(w.min),
+      w.sport === 'strength' ? '–' : fmtDist(w.sport, w.dist),
+      fmtPace(w),
+      String(w.rpe),
+      String(Math.round(load1(w))),
+    ];
+    cells.forEach((c, i) => {
+      const td = document.createElement('td');
+      if (i === 1) td.innerHTML = `<span class="pill"><i class="sw" style="background:var(--${w.sport})"></i>${LABEL[w.sport]}</span>`;
+      else td.textContent = c;
+      if (i >= 2) td.className = 'num';
+      tr.appendChild(td);
+    });
+    const notes = document.createElement('td'); notes.className = 'notes'; notes.textContent = w.notes || ''; tr.appendChild(notes);
+    const del = document.createElement('td');
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'link'; b.textContent = 'Delete';
+    b.setAttribute('aria-label', `Delete ${LABEL[w.sport]} on ${w.date}`);
+    b.onclick = () => { state.workouts = state.workouts.filter(x => x.id !== w.id); save(); renderAll(); };
+    del.appendChild(b); tr.appendChild(del);
+    body.appendChild(tr);
+  }
+  const more = document.getElementById('btnMore');
+  more.hidden = rows.length <= logLimit;
+}
+
+function renderAll() {
+  renderHeader(); renderKPIs(); renderPhases(); renderVolume(); renderReadiness();
+  renderLoad(); renderHeat(); renderSplit(); renderLog();
+}
+
+// ---------- Events ----------
+const form = document.getElementById('logForm');
+form.date.value = iso(today());
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const f = new FormData(form);
+  const sport = f.get('sport');
+  let dist = parseFloat(f.get('dist')) || 0;
+  if (sport === 'swim') dist = imperial() ? (dist * M_PER_YD) / 1000 : dist / 1000; // yd/m -> km
+  else if (imperial()) dist *= KM_PER_MI;
+  state.workouts.push({
+    id: uid(), date: f.get('date'), sport,
+    min: Math.max(1, parseInt(f.get('min'), 10) || 0),
+    dist: +dist.toFixed(3),
+    rpe: Math.max(1, Math.min(10, parseInt(f.get('rpe'), 10) || 5)),
+    notes: String(f.get('notes') || '').slice(0, 200),
+  });
+  save(); renderAll();
+  form.min.value = ''; form.dist.value = ''; form.notes.value = '';
+  form.min.focus();
+});
+
+document.getElementById('btnMore').onclick = () => { logLimit += 30; renderLog(); };
+document.getElementById('btnClearSample').onclick = () => {
+  if (!confirm('Remove all sample sessions?')) return;
+  state.workouts = []; state.sample = false; save(); renderAll();
+};
+
+const dlg = document.getElementById('settings');
+const sf = document.getElementById('settingsForm');
+document.getElementById('btnSettings').onclick = () => {
+  for (const k of ['raceName', 'raceDate', 'planWeeks', 'peakHours', 'units']) sf[k].value = state.settings[k];
+  dlg.showModal();
+};
+dlg.addEventListener('close', () => {
+  if (dlg.returnValue !== 'save') return;
+  state.settings = {
+    raceName: sf.raceName.value.trim() || 'IRONMAN 70.3',
+    raceDate: sf.raceDate.value || state.settings.raceDate,
+    planWeeks: Math.max(8, Math.min(40, parseInt(sf.planWeeks.value, 10) || 20)),
+    peakHours: Math.max(3, Math.min(25, parseFloat(sf.peakHours.value) || 11)),
+    units: sf.units.value === 'imperial' ? 'imperial' : 'metric',
+  };
+  save(); renderAll();
+});
+
+document.getElementById('btnExport').onclick = () => {
+  const blob = new Blob([JSON.stringify({ settings: state.settings, workouts: state.workouts }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `703-training-${iso(today())}.json`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+};
+document.getElementById('importFile').onchange = async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    const data = JSON.parse(await file.text());
+    if (!Array.isArray(data.workouts)) throw new Error('Missing workouts');
+    const ok = data.workouts.filter(w => SPORTS.includes(w.sport) && /^\d{4}-\d{2}-\d{2}$/.test(w.date) && +w.min > 0)
+      .map(w => ({ id: w.id || uid(), date: w.date, sport: w.sport, min: +w.min, dist: +w.dist || 0, rpe: Math.max(1, Math.min(10, +w.rpe || 5)), notes: String(w.notes || '').slice(0, 200) }));
+    state = { settings: { ...defaultSettings(), ...state.settings, ...(data.settings || {}) }, workouts: ok, sample: false };
+    save(); renderAll();
+  } catch (err) {
+    alert('Could not import that file: ' + err.message);
+  }
+  e.target.value = '';
+};
+
+const themeBtn = document.getElementById('btnTheme');
+function applyTheme(t) {
+  if (t) document.documentElement.setAttribute('data-theme', t); else document.documentElement.removeAttribute('data-theme');
+}
+try { applyTheme(localStorage.getItem(STORE_KEY + '-theme')); } catch (e) { /* ignore */ }
+themeBtn.onclick = () => {
+  const dark = document.documentElement.dataset.theme
+    ? document.documentElement.dataset.theme === 'dark'
+    : matchMedia('(prefers-color-scheme: dark)').matches;
+  const next = dark ? 'light' : 'dark';
+  applyTheme(next);
+  try { localStorage.setItem(STORE_KEY + '-theme', next); } catch (e) { /* ignore */ }
+};
+
+let rt;
+addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { renderVolume(); renderLoad(); }, 120); });
+
+renderAll();
+})();
+</script>
+</body>
+</html>
