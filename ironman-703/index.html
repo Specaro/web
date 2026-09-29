@@ -165,6 +165,9 @@ td.notes { white-space: normal; color: var(--ink-2); min-width: 160px; }
 .pill { display: inline-flex; align-items: center; gap: 6px; }
 details summary { cursor: pointer; color: var(--ink-2); font-size: 12px; margin-top: 10px; }
 
+.status { margin: -8px 0 14px; font-size: 13px; color: var(--ink-2); }
+.status.err { color: var(--critical); }
+
 /* Workout plan */
 .plan-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
 .plan-nav { display: flex; align-items: center; gap: 6px; }
@@ -230,6 +233,7 @@ dialog .actions { display: flex; justify-content: flex-end; gap: 8px; margin-top
     </div>
   </header>
 
+  <p class="status" id="status" role="status" hidden></p>
   <div class="banner" id="sampleBanner" hidden>
     <span>You're looking at sample training data. Log your own sessions below, or clear the sample to start fresh.</span>
     <button type="button" id="btnClearSample">Clear sample data</button>
@@ -475,7 +479,74 @@ function makeSample(settings) {
 }
 function uid() { return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4); }
 
-let state = load();
+const IN_VIEWER = !!(window.claude && typeof window.claude.use === 'function');
+let state = IN_VIEWER ? { settings: defaultSettings(), workouts: [], sample: false } : load();
+let db = null; // cloud store when running as a published page
+
+function cleanWorkout(w, id) {
+  if (!w || !SPORTS.includes(w.sport) || !/^\d{4}-\d{2}-\d{2}$/.test(w.date) || !(+w.min > 0)) return null;
+  return {
+    id: String(id || w.id || uid()).replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40) || uid(),
+    date: w.date, sport: w.sport,
+    min: Math.min(720, +w.min), dist: Math.max(0, +w.dist || 0),
+    rpe: Math.max(1, Math.min(10, Math.round(+w.rpe) || 5)),
+    notes: String(w.notes || '').slice(0, 200),
+  };
+}
+function cleanSettings(x) {
+  const d = defaultSettings();
+  x = x || {};
+  return {
+    raceName: String(x.raceName || d.raceName).slice(0, 60),
+    raceDate: /^\d{4}-\d{2}-\d{2}$/.test(x.raceDate) ? x.raceDate : d.raceDate,
+    planWeeks: Math.max(8, Math.min(40, parseInt(x.planWeeks, 10) || d.planWeeks)),
+    peakHours: Math.max(3, Math.min(25, parseFloat(x.peakHours) || d.peakHours)),
+    focus: ['swim', 'balanced', 'bike', 'run'].includes(x.focus) ? x.focus : d.focus,
+    units: x.units === 'imperial' ? 'imperial' : 'metric',
+  };
+}
+
+let statusTimer;
+function setStatus(text, isError) {
+  const el = document.getElementById('status');
+  el.textContent = text;
+  el.className = 'status' + (isError ? ' err' : '');
+  el.hidden = !text;
+  clearTimeout(statusTimer);
+  if (text && !isError) statusTimer = setTimeout(() => { el.hidden = true; }, 4000);
+}
+
+// Persistence: cloud store when published, browser storage otherwise.
+async function putWorkout(w) {
+  if (!db) { save(); return; }
+  try { await db.doc('workouts/' + w.id).set({ date: w.date, sport: w.sport, min: w.min, dist: w.dist, rpe: w.rpe, notes: w.notes }); }
+  catch (e) { setStatus(e && e.code === 'quota_exceeded' ? 'Storage is full. Delete some old sessions to log new ones.' : 'That session didn\u2019t save. Check your connection and try again.', true); }
+}
+async function removeWorkout(id) {
+  if (!db) { save(); return; }
+  try { await db.doc('workouts/' + id).delete(); }
+  catch (e) { setStatus('That session couldn\u2019t be deleted. Try again.', true); }
+}
+async function putSettings() {
+  if (!db) { save(); return; }
+  try { await db.doc('config/settings').set({ ...state.settings }); }
+  catch (e) { setStatus('Race settings didn\u2019t save. Try again.', true); }
+}
+
+async function connectCloud() {
+  if (!IN_VIEWER) return;
+  let store = null;
+  try { store = await window.claude.use('db'); } catch (e) { store = null; }
+  if (!store) { state = load(); renderAll(); return; }
+  db = store;
+  db.collection('workouts').onSnapshot(snap => {
+    state.workouts = snap.docs.map(d => cleanWorkout(d.data(), d.id)).filter(Boolean);
+    renderAll();
+  }, () => setStatus('Your saved sessions couldn\u2019t load. Reload the page to try again.', true));
+  db.doc('config/settings').onSnapshot(snap => {
+    if (snap.exists) { state.settings = cleanSettings(snap.data()); renderAll(); }
+  }, () => {});
+}
 
 // ---------- Units ----------
 const imperial = () => state.settings.units === 'imperial';
@@ -916,7 +987,7 @@ function renderLog() {
     const del = document.createElement('td');
     const b = document.createElement('button'); b.type = 'button'; b.className = 'link'; b.textContent = 'Delete';
     b.setAttribute('aria-label', `Delete ${LABEL[w.sport]} on ${w.date}`);
-    b.onclick = () => { state.workouts = state.workouts.filter(x => x.id !== w.id); save(); renderAll(); };
+    b.onclick = () => { state.workouts = state.workouts.filter(x => x.id !== w.id); renderAll(); removeWorkout(w.id); };
     del.appendChild(b); tr.appendChild(del);
     body.appendChild(tr);
   }
@@ -1145,14 +1216,18 @@ form.addEventListener('submit', e => {
   let dist = parseFloat(f.get('dist')) || 0;
   if (sport === 'swim') dist = imperial() ? (dist * M_PER_YD) / 1000 : dist / 1000; // yd/m -> km
   else if (imperial()) dist *= KM_PER_MI;
-  state.workouts.push({
-    id: uid(), date: f.get('date'), sport,
+  const w = cleanWorkout({
+    date: f.get('date'), sport,
     min: Math.max(1, parseInt(f.get('min'), 10) || 0),
     dist: +dist.toFixed(3),
-    rpe: Math.max(1, Math.min(10, parseInt(f.get('rpe'), 10) || 5)),
-    notes: String(f.get('notes') || '').slice(0, 200),
+    rpe: parseInt(f.get('rpe'), 10),
+    notes: f.get('notes'),
   });
-  save(); renderAll();
+  if (!w) { setStatus('Add a date, discipline and duration to log a session.', true); return; }
+  state.workouts.push(w);
+  renderAll();
+  putWorkout(w);
+  setStatus(`Logged: ${LABEL[w.sport]}, ${fmtHM(w.min)}.`);
   form.min.value = ''; form.dist.value = ''; form.notes.value = '';
   form.min.focus();
 });
@@ -1161,8 +1236,14 @@ document.getElementById('wkPrev').onclick = () => { planOffset--; renderPlan(); 
 document.getElementById('wkNext').onclick = () => { planOffset++; renderPlan(); };
 document.getElementById('wkToday').onclick = () => { planOffset = 0; renderPlan(); };
 document.getElementById('btnMore').onclick = () => { logLimit += 30; renderLog(); };
-document.getElementById('btnClearSample').onclick = () => {
-  if (!confirm('Remove all sample sessions?')) return;
+let clearArmed = false;
+document.getElementById('btnClearSample').onclick = e => {
+  const btn = e.currentTarget;
+  if (!clearArmed) {
+    clearArmed = true; btn.textContent = 'Tap again to clear';
+    setTimeout(() => { clearArmed = false; btn.textContent = 'Clear sample data'; }, 4000);
+    return;
+  }
   state.workouts = []; state.sample = false; save(); renderAll();
 };
 
@@ -1174,22 +1255,30 @@ document.getElementById('btnSettings').onclick = () => {
 };
 dlg.addEventListener('close', () => {
   if (dlg.returnValue !== 'save') return;
-  state.settings = {
-    raceName: sf.raceName.value.trim() || 'IRONMAN 70.3',
-    raceDate: sf.raceDate.value || state.settings.raceDate,
-    planWeeks: Math.max(8, Math.min(40, parseInt(sf.planWeeks.value, 10) || 20)),
-    peakHours: Math.max(3, Math.min(25, parseFloat(sf.peakHours.value) || 11)),
-    focus: ['swim', 'balanced', 'bike', 'run'].includes(sf.focus.value) ? sf.focus.value : 'balanced',
-    units: sf.units.value === 'imperial' ? 'imperial' : 'metric',
-  };
-  save(); renderAll();
+  state.settings = cleanSettings({
+    raceName: sf.raceName.value.trim(), raceDate: sf.raceDate.value, planWeeks: sf.planWeeks.value,
+    peakHours: sf.peakHours.value, focus: sf.focus.value, units: sf.units.value,
+  });
+  renderAll();
+  putSettings();
+  setStatus('Race settings saved.');
 });
 
-document.getElementById('btnExport').onclick = () => {
-  const blob = new Blob([JSON.stringify({ settings: state.settings, workouts: state.workouts }, null, 2)], { type: 'application/json' });
+document.getElementById('btnExport').onclick = async () => {
+  const json = JSON.stringify({ settings: state.settings, workouts: state.workouts }, null, 2);
+  const filename = `703-training-${iso(today())}.json`;
+  if (IN_VIEWER) {
+    let dl = null;
+    try { dl = await window.claude.use('downloads'); } catch (e) { dl = null; }
+    if (!dl) { setStatus('Export isn\u2019t available here. Your sessions are already saved online.', true); return; }
+    try { await dl.save({ filename, data: json }); setStatus('Backup saved.'); }
+    catch (e) { if (e && e.code !== 'declined') setStatus('The backup couldn\u2019t be saved. Try again.', true); }
+    return;
+  }
+  const blob = new Blob([json], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `703-training-${iso(today())}.json`;
+  a.download = filename;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 };
@@ -1199,12 +1288,19 @@ document.getElementById('importFile').onchange = async e => {
   try {
     const data = JSON.parse(await file.text());
     if (!Array.isArray(data.workouts)) throw new Error('Missing workouts');
-    const ok = data.workouts.filter(w => SPORTS.includes(w.sport) && /^\d{4}-\d{2}-\d{2}$/.test(w.date) && +w.min > 0)
-      .map(w => ({ id: w.id || uid(), date: w.date, sport: w.sport, min: +w.min, dist: +w.dist || 0, rpe: Math.max(1, Math.min(10, +w.rpe || 5)), notes: String(w.notes || '').slice(0, 200) }));
-    state = { settings: { ...defaultSettings(), ...state.settings, ...(data.settings || {}) }, workouts: ok, sample: false };
-    save(); renderAll();
+    const ok = data.workouts.map(w => cleanWorkout(w)).filter(Boolean);
+    const byId = new Map((state.sample ? [] : state.workouts).map(w => [w.id, w]));
+    ok.forEach(w => byId.set(w.id, w));
+    state = { settings: cleanSettings({ ...state.settings, ...(data.settings || {}) }), workouts: [...byId.values()], sample: false };
+    renderAll();
+    if (db) {
+      setStatus(`Importing ${ok.length} sessions\u2026`);
+      await putSettings();
+      for (const w of ok) await putWorkout(w);
+    } else save();
+    setStatus(`Imported ${ok.length} sessions.`);
   } catch (err) {
-    alert('Could not import that file: ' + err.message);
+    setStatus('That file couldn\u2019t be imported. Choose a backup made with Export.', true);
   }
   e.target.value = '';
 };
@@ -1227,6 +1323,7 @@ let rt;
 addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { renderVolume(); renderLoad(); }, 120); });
 
 renderAll();
+connectCloud();
 })();
 </script>
 </body>
